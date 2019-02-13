@@ -158,23 +158,23 @@
 * Packages
 ** rtags
    #+BEGIN_SRC emacs-lisp
-     (use-package rtags
-        :ensure t
-        :config
-        (rtags-enable-standard-keybindings)
-        (setq rtags-autostart-diagnostics t)
-        (push 'company-rtags company-backends)
-        (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
-        ;; for realgud
-        ;; in emacs, M-x load-library realgud
-
-        (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
-        (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
-        )
-      (use-package helm-rtags
-        :ensure t)
-      (use-package company-rtags
-        :ensure t)
+     ;;(use-package rtags
+     ;;   :ensure t
+     ;;   :config
+     ;;   (rtags-enable-standard-keybindings)
+     ;;   (setq rtags-autostart-diagnostics t)
+     ;;   (push 'company-rtags company-backends)
+     ;;   (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
+     ;;   ;; for realgud
+     ;;   ;; in emacs, M-x load-library realgud
+     ;;
+     ;;   (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
+     ;;   (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
+     ;;   )
+     ;; (use-package helm-rtags
+     ;;   :ensure t)
+     ;; (use-package company-rtags
+     ;;   :ensure t)
    #+END_SRC
 
 ** jinja2
@@ -650,7 +650,10 @@
    #+BEGIN_SRC  emacs-lisp
      (use-package ample-theme
        :ensure t
-       :config (load-theme 'ample t))
+       :config
+       (load-theme 'ample t)
+       (set-face-attribute 'region nil :background "#555")
+       )
    #+END_SRC
 
 ** which-key
