@@ -1093,25 +1093,6 @@
   (define-key global-map [C-mouse-5] 'up-a-lot)
   #+END_SRC
 
-* Custom file type binding to mode
-  this should be put at the end. some packages overrides auto-mode-alist
-  #+BEGIN_SRC emacs-lisp
-    (setq auto-mode-alist
-      (append
-       ;; File name ends in `.C'.
-       '(
-         (".*/kernel/.*\\.h\\'" . c-mode)
-         (".*/prg/c/.*\\.h\\'" . c-mode)
-         ("\\.c\\'" . c-mode)
-         ("\\.h\\'" . c++-mode)
-         ("\\.cpp\\'" . c++-mode)
-         ("\\.cc\\'" . c++-mode)
-         ("\\.tpp\\'" . c++-mode)
-         ("\\.org\\'" . org-mode)
-         ("\\.txt\\'" . org-mode)
-         ) auto-mode-alist))
-  #+END_SRC
-
 * ETC
   #+BEGIN_SRC emacs-lisp
     (global-hl-line-mode t)
@@ -1246,3 +1227,22 @@
   #+BEGIN_SRC emacs-lisp
     (load-if-exists "~/.emacs.d/company.el")
   #+END_SRC
+* Custom file type binding to mode
+  this should be put at the end. some packages overrides auto-mode-alist
+  #+BEGIN_SRC emacs-lisp
+    (setq auto-mode-alist
+      (append
+       ;; File name ends in `.C'.
+       '(
+         (".*/kernel/.*\\.h\\'" . c-mode)
+         (".*/prg/c/.*\\.h\\'" . c-mode)
+         ("\\.c\\'" . c-mode)
+         ("\\.h\\'" . c++-mode)
+         ("\\.cpp\\'" . c++-mode)
+         ("\\.cc\\'" . c++-mode)
+         ("\\.tpp\\'" . c++-mode)
+         ("\\.org\\'" . org-mode)
+         ("\\.txt\\'" . org-mode)
+         ) auto-mode-alist))
+  #+END_SRC
+
