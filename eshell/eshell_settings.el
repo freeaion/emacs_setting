@@ -21,6 +21,14 @@
             (lambda ()
               (bind-keys :map eshell-mode-map
                          ("C-d" . ha/eshell-quit-or-delete-char))
+              (bind-keys :map eshell-mode-map
+                         ([up] . previous-line))
+              (bind-keys :map eshell-mode-map
+                         ([down] . next-line))
+
+              ;;(define-key eshell-mode-map [up] 'previous-line)
+              ;;(define-key eshell-mode-map [down] 'next-line)
+
               (add-to-list 'eshell-visual-commands "ssh")
               (add-to-list 'eshell-visual-commands "tail")
               (add-to-list 'eshell-visual-commands "top")
