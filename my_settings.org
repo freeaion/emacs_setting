@@ -157,6 +157,7 @@
    #+END_SRC
 * Packages
 ** eshell
+   cd /USER@PUTTYCONFIG:/some/path
    #+BEGIN_SRC emacs-lisp
      (load-if-exists "~/.emacs.d/eshell/eshell_settings.el")
    #+END_SRC
