@@ -1,4 +1,14 @@
 (use-package eshell
+  :config
+  (defun ha/eshell-quit-or-delete-char (arg)
+    (interactive "p")
+    (if (and (eolp) (looking-back eshell-prompt-regexp))
+        (progn
+          (eshell-life-is-too-much) ; Why not? (eshell/exit)
+          (ignore-errors
+            (delete-window)))
+      (delete-forward-char arg)))
+  (setq tramp-default-method "ssh")
   :init
   (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
    eshell-scroll-to-bottom-on-input 'all
@@ -9,6 +19,8 @@
    eshell-destroy-buffer-when-process-dies t)
   (add-hook 'eshell-mode-hook
             (lambda ()
+              (bind-keys :map eshell-mode-map
+                         ("C-d" . ha/eshell-quit-or-delete-char))
               (add-to-list 'eshell-visual-commands "ssh")
               (add-to-list 'eshell-visual-commands "tail")
               (add-to-list 'eshell-visual-commands "top")
@@ -224,4 +236,58 @@ directory to make multiple eshell windows easier."
 
 (bind-key "C-!" 'eshell-here)
 
-(setq tramp-default-method "ssh")
+(defun ha/eshell-host->tramp (username hostname &optional prefer-root)
+  "Returns a TRAMP reference based on a USERNAME and HOSTNAME
+that refers to any host or IP address."
+  (cond ((string-match-p "^/" host)
+           host)
+        ((or (and prefer-root (not username)) (equal username "root"))
+           (format "/ssh:%s|sudo:%s:" hostname hostname))
+        ((or (null username) (equal username user-login-name))
+           (format "/ssh:%s:" hostname))
+        (t
+           (format "/ssh:%s|sudo:%s|sudo@%s:%s:" hostname hostname username hostname))))
+
+(defun ha/eshell-host-regexp (regexp)
+  "Returns a particular regular expression based on symbol, REGEXP"
+  (let* ((user-regexp      "\\(\\([[:alpha:].]+\\)@\\)?")
+         (tramp-regexp     "\\b/ssh:[:graph:]+")
+         (ip-char          "[[:digit:]]")
+         (ip-plus-period   (concat ip-char "+" "\\."))
+         (ip-regexp        (concat "\\(\\(" ip-plus-period "\\)\\{3\\}" ip-char "+\\)"))
+         (host-char        "[[:alpha:][:digit:]-]")
+         (host-plus-period (concat host-char "+" "\\."))
+         (host-regexp      (concat "\\(\\(" host-plus-period "\\)+" host-char "+\\)"))
+         (horrific-regexp  (concat "\\b"
+                                   user-regexp ip-regexp
+                                   "\\|"
+                                   user-regexp host-regexp
+                                   "\\b")))
+    (cond
+     ((eq regexp 'tramp) tramp-regexp)
+     ((eq regexp 'host)  host-regexp)
+     ((eq regexp 'full)  horrific-regexp))))
+
+(defun eshell-there (host)
+  "Creates an eshell session that uses Tramp to automatically
+connect to a remote system, HOST.  The hostname can be either the
+IP address, or FQDN, and can specify the user account, as in
+root@blah.com. HOST can also be a complete Tramp reference."
+  (interactive "sHost: ")
+
+  (let* ((default-directory
+           (cond
+            ((string-match-p "^/" host) host)
+
+            ((string-match-p (ha/eshell-host-regexp 'full) host)
+             (string-match (ha/eshell-host-regexp 'full) host) ;; Why!?
+             (let* ((user1 (match-string 2 host))
+                    (host1 (match-string 3 host))
+                    (user2 (match-string 6 host))
+                    (host2 (match-string 7 host)))
+               (if host1
+                   (ha/eshell-host->tramp user1 host1)
+                 (ha/eshell-host->tramp user2 host2))))
+
+            (t (format "/%s:" host)))))
+    (eshell-here)))
