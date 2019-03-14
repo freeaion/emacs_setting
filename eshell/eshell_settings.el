@@ -29,37 +29,12 @@
               (add-to-list 'eshell-visual-commands "ssh")
               (add-to-list 'eshell-visual-commands "tail")
               (add-to-list 'eshell-visual-commands "top")
-              (eshell/alias "e" "find-file $1")
-              (eshell/alias "ff" "find-file $1")
-              (eshell/alias "emacs" "find-file $1")
-              (eshell/alias "ee" "find-file-other-window $1")
-
-              (eshell/alias "gd" "magit-diff-unstaged")
-              (eshell/alias "gds" "magit-diff-staged")
-              (eshell/alias "d" "dired $1")
-
-              ;; shell alias
-              (eshell/alias "rm" "/bin/rm -i $*")
-              (eshell/alias "cp" "/bin/cp -i $*")
-              (eshell/alias "mv" "/bin/mv -i $*")
-              (eshell/alias "mkdir" "/bin/mkdir -p $*")
-              (eshell/alias "h" "history")
-
-              ;;(eshell/alias "ls" "/bin/ls --group-directories-first -h --color")
-              ;;(eshell/alias "ll" "/bin/ls --group-directories-first -l")
-              (eshell/alias "la" "ls -a")
-              (eshell/alias "lx" "/bin/ls --group-directories-first -lXB")
-              (eshell/alias "lk" "/bin/ls --group-directories-first -lSr")
-              (eshell/alias "lc" "/bin/ls --group-directories-first -ltcr")
-              (eshell/alias "lu" "/bin/ls --group-directories-first -ltur")
-              (eshell/alias "lt" "/bin/ls --group-directories-first -ltr")
-              (eshell/alias "lr" "/bin/ls --group-directories-first -lR")
-
               ;; The 'ls' executable requires the Gnu version on the Mac
               (let ((ls (if (file-exists-p "/usr/local/bin/gls")
                             "/usr/local/bin/gls"
                           "/bin/ls")))
-                (eshell/alias "ll" (concat ls " -AlohG --color=always")))))
+                (eshell/alias "ll" (concat ls " -AlohG --color=always"))))
+            )
   )
 
 (use-package eshell-bookmark
