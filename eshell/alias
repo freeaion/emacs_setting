@@ -1,23 +1,25 @@
 alias ll /bin/ls -AlohG --color=always
-alias rcd cd /usr/local/google/home/yonghyun/kernel/8xx
-alias gcd cd /google/src/cloud/yonghyun/$1/google3
-alias gls /usr/bin/p4 tabcomplete --token=2 -- p4 g4d
-alias lr /bin/ls --group-directories-first -lR
-alias lt /bin/ls --group-directories-first -ltr
-alias lu /bin/ls --group-directories-first -ltur
-alias lc /bin/ls --group-directories-first -ltcr
-alias lk /bin/ls --group-directories-first -lSr
-alias lx /bin/ls --group-directories-first -lXB
-alias la ls -a
-alias h history
-alias mkdir /bin/mkdir -p $*
-alias mv /bin/mv -i $*
-alias cp /bin/cp -i $*
-alias rm /bin/rm -i $*
-alias d dired $1
-alias gds magit-diff-staged
-alias gd magit-diff-unstaged
-alias ee find-file-other-window $1
-alias emacs find-file $1
-alias ff find-file $1
 alias e find-file $1
+alias ff find-file $1
+alias emacs find-file $1
+alias ee find-file-other-window $1
+alias gd magit-diff-unstaged
+alias gds magit-diff-staged
+alias d dired $1
+alias rm /bin/rm -i $*
+alias cp /bin/cp -i $*
+alias mv /bin/mv -i $*
+alias mkdir /bin/mkdir -p $*
+alias info helm-info-eshell
+alias h helm-eshell-history
+alias la ls -a
+alias lx /bin/ls --group-directories-first -lXB
+alias lk /bin/ls --group-directories-first -lSr
+alias lc /bin/ls --group-directories-first -ltcr
+alias lu /bin/ls --group-directories-first -ltur
+alias lt /bin/ls --group-directories-first -ltr
+alias lr /bin/ls --group-directories-first -lR
+alias msv /google/data/ro/projects/assimilator/msv
+alias gls /usr/bin/p4 tabcomplete --token=2 -- p4 g4d
+alias gcd cd /google/src/cloud/yonghyun/$1/google3
+alias rcd cd /usr/local/google/home/yonghyun/kernel/8xx
