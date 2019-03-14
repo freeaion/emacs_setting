@@ -175,10 +175,10 @@
        (bind-keys :map c-mode-base-map ([C-tab] . company-complete))
        (bind-keys :map c-mode-base-map ("M-." . rtags-find-symbol-at-point))
        (bind-keys :map c-mode-base-map ("M-," . rtags-location-stack-back))
-
+     
        ;; for realgud
        ;; in emacs, M-x load-library realgud
-
+     
        (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
        (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
        )
@@ -289,6 +289,11 @@
    #+BEGIN_SRC  emacs-lisp
      (setq ibuffer-saved-filter-groups
            '(("home"
+              ("Sys" (or (name . "Eshell")
+                         (mode . dired-mode)
+                         (name . "\*Custom\*")
+                         (name . "\*Package\*")
+                         ))
               ("Srcs" (or (mode . c-mode)
                           (mode . c++-mode)
                           (mode . java-mode)
@@ -299,11 +304,6 @@
               ("Info" (or (name . "\*P4\*")
                           (name . "\*Compilation\*")
                           ))
-              ("Sys" (or (name . "\*Term\*")
-                         (mode . dired-mode)
-                         (name . "\*Custom\*")
-                         (name . "\*Package\*")
-                         ))
               ("Org" (mode . org-mode))
               ("Magit" (name . "\*magit"))
               ("Help" (or (name . "\*Help\*")
