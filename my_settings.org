@@ -173,14 +173,16 @@
        (push 'company-rtags company-backends)
        ;;(define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
        (bind-keys :map c-mode-base-map ([C-tab] . company-complete))
-       (bind-keys :map c-mode-base-map ("M-." . rtags-find-symbol-at-point))
-       (bind-keys :map c-mode-base-map ("M-," . rtags-location-stack-back))
-     
+
        ;; for realgud
        ;; in emacs, M-x load-library realgud
-     
+
        (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
        (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
+
+       :bind
+       ([remap xref-find-definitions] . rtags-find-symbol-at-point)
+       ([remap xref-pop-marker-stack] . rtags-location-stack-back)
        )
      (use-package helm-rtags
        :ensure t)
