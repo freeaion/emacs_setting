@@ -28,12 +28,7 @@
 
               (add-to-list 'eshell-visual-commands "ssh")
               (add-to-list 'eshell-visual-commands "tail")
-              (add-to-list 'eshell-visual-commands "top")
-              ;; The 'ls' executable requires the Gnu version on the Mac
-              (let ((ls (if (file-exists-p "/usr/local/bin/gls")
-                            "/usr/local/bin/gls"
-                          "/bin/ls")))
-                (eshell/alias "ll" (concat ls " -AlohG --color=always"))))
+              (add-to-list 'eshell-visual-commands "top"))
             )
   )
 
