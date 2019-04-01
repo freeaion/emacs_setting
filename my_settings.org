@@ -156,6 +156,17 @@
        )
    #+END_SRC
 * Packages
+** recently
+   #+BEGIN_SRC emacs-lisp
+     (use-package recently
+       :ensure t
+       :config
+       (recently-mode +1)
+       :init
+       (bind-key "C-c o" 'recently-show)
+       )
+   #+END_SRC
+
 ** eshell
    cd /USER@PUTTYCONFIG:/some/path
    #+BEGIN_SRC emacs-lisp
@@ -173,13 +184,13 @@
        (push 'company-rtags company-backends)
        ;;(define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
        (bind-keys :map c-mode-base-map ([C-tab] . company-complete))
-
+     
        ;; for realgud
        ;; in emacs, M-x load-library realgud
-
+     
        (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
        (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
-
+     
        :bind
        ([remap xref-find-definitions] . rtags-find-symbol-at-point)
        ([remap xref-pop-marker-stack] . rtags-location-stack-back)
