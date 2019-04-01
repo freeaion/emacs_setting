@@ -1163,6 +1163,8 @@
     (diminish 'linum-relative-mode)
     (diminish 'abbrev-mode)
     (diminish 'volatile-highlights-mode)
+    (diminish 'recently-mode)
+    (diminish 'helm-mode)
 
     ;; setup user home directory to use custom lisp package
     ;;(defvar use-home)
