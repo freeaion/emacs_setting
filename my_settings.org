@@ -60,23 +60,6 @@
        (save-some-buffers)
        (kill-emacs))
 
-     (defun my-term-switch-line-char ()
-       "Switch `term-in-line-mode' and `term-in-char-mode' in `ansi-term'"
-       (interactive)
-       (cond
-        ((term-in-line-mode)
-         (term-char-mode)
-         (hl-line-mode -1))
-        ((term-in-char-mode)
-         (term-line-mode)
-         (hl-line-mode 1))))
-
-     (defun create-shell ()
-       "creates a shell with a given name"
-       (interactive);; "Prompt\n shell name:")
-       (let ((shell-name (read-string "shell name: " nil)))
-         (shell (concat "*" shell-name "*"))))
-
      (defun load-if-exists (file)
        "load the elisp file only if it exists and is readable"
        (if (file-readable-p file)
@@ -513,12 +496,6 @@
        :bind (("C-z h" . helm-elscreen)))
    #+END_SRC
    
-** helm-mt
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-mt
-       :ensure t)
-   #+END_SRC
-
 ** helm-projectile
    #+BEGIN_SRC  emacs-lisp
      (use-package helm-projectile
@@ -991,12 +968,10 @@
 
      (add-hook 'term-mode-hook
                (lambda ()
-                 (define-key term-raw-map (kbd "C-c t") 'my-term-switch-line-char)
                  (define-key term-raw-map (kbd "M-x") 'helm-M-x)
                  (define-key term-raw-map (kbd "C-y") 'term-paste)
                  (define-key term-raw-map (kbd "C-c q") 'comint-clear-buffer)
                  (define-key term-raw-map (kbd "C-c C-e") 'term-send-esc)
-                 (define-key term-mode-map (kbd "C-c t") 'my-term-switch-line-char)
                  (define-key term-mode-map (kbd "M-x") 'helm-M-x)
                  (define-key term-mode-map (kbd "C-y") 'term-paste)
                  (define-key term-mode-map (kbd "C-c q") 'comint-clear-buffer)
@@ -1104,7 +1079,7 @@
     (defhydra system (global-map "C-c s" :hint nil)
       "system "
       ("b" compile :exit t)
-      ("t" helm-mt :exit t)
+      ("t" vterm :exit t)
       ("q" nil))
   #+END_SRC
 
@@ -1233,7 +1208,7 @@
      '(package-enable-at-startup nil)
      '(package-selected-packages
        (quote
-        (linum-relative deft volatile-highlights helm-company helm-config diminish dashboard switch-window elpy flycheck helm-tramp hungry-delete undo-tree helm-ag company-quickhelp company helm-swoop avy buffer-move ibuffer-projectile helm-bm helm-mt multi-term helm-projectile modern-cpp-font-lock dired-subtree helm-elscreen elscreen magit persistent-scratch projectile multiple-cursors helm-gtags helm with-editor ws-butler highlight-parentheses expand-region origami symbol-overlay dired-recent ample-theme hydra bm zoom-window org-bullets which-key bind-key use-package)))
+        (linum-relative deft volatile-highlights helm-company helm-config diminish dashboard switch-window elpy flycheck helm-tramp hungry-delete undo-tree helm-ag company-quickhelp company helm-swoop avy buffer-move ibuffer-projectile helm-bm  multi-term helm-projectile modern-cpp-font-lock dired-subtree helm-elscreen elscreen magit persistent-scratch projectile multiple-cursors helm-gtags helm with-editor ws-butler highlight-parentheses expand-region origami symbol-overlay dired-recent ample-theme hydra bm zoom-window org-bullets which-key bind-key use-package)))
      '(projectile-completion-system (quote helm))
      '(projectile-mode t nil (projectile))
      '(projectile-switch-project-action (quote helm-projectile-switch-to-buffer))
