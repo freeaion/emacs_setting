@@ -295,7 +295,7 @@
    #+BEGIN_SRC  emacs-lisp
      (setq ibuffer-saved-filter-groups
            '(("home"
-              ("Sys" (or (mode . eshell-mode)
+              ("Sys" (or (mode . vterm-mode)
                          (mode . dired-mode)
                          (name . "\*Custom\*")
                          (name . "\*Package\*")
