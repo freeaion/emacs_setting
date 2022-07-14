@@ -139,6 +139,16 @@
        )
    #+END_SRC
 * Packages
+** tide
+   #+BEGIN_SRC emacs-lisp
+     (use-package tide
+       :ensure t
+       :after (typescript-mode company flycheck)
+       :hook ((typescript-mode . tide-setup)
+              (typescript-mode . tide-hl-identifier-mode)
+              (before-save . tide-format-before-save)))
+   #+END_SRC
+
 ** vterm
    #+BEGIN_SRC emacs-lisp
      (use-package vterm
@@ -192,6 +202,12 @@
      ;  :ensure t)
      ;(use-package company-rtags
      ;  :ensure t)
+   #+END_SRC
+
+** rustic
+   #+BEGIN_SRC emacs-lisp
+     (use-package rustic
+       :ensure t)
    #+END_SRC
 
 ** jinja2
@@ -490,11 +506,11 @@
    #+END_SRC
 
 ** helm-elscreen
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-elscreen
-       :ensure t
-       :bind (("C-z h" . helm-elscreen)))
-   #+END_SRC
+   ;#+BEGIN_SRC  emacs-lisp
+   ;  (use-package helm-elscreen
+   ;    :ensure t
+   ;    :bind (("C-z h" . helm-elscreen)))
+   ;#+END_SRC
    
 ** helm-projectile
    #+BEGIN_SRC  emacs-lisp
@@ -592,6 +608,7 @@
        (global-undo-tree-mode)
        :config
        (unbind-key "C-/" undo-tree-map)
+       (setq undo-tree-auto-save-history nil)
        )
    #+END_SRC
 
