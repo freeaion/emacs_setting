@@ -417,13 +417,6 @@
              )
     #+END_SRC
 
-*** helm-elscreen
-    #+BEGIN_SRC  emacs-lisp
-      (use-package helm-elscreen
-        :ensure t
-        :bind (("C-z h" . helm-elscreen)))
-    #+END_SRC
-   
 *** helm-projectile
     #+BEGIN_SRC  emacs-lisp
       (use-package helm-projectile
@@ -1362,3 +1355,11 @@
      ;;   helm-gtags-pulse-at-cursor t
      ;;   helm-gtags-suggested-key-mapping t))
    #+END_SRC
+
+** helm-elscreen
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package helm-elscreen
+     ;;  :ensure t
+     ;;  :bind (("C-z h" . helm-elscreen)))
+   #+END_SRC
+   
