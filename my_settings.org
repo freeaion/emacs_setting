@@ -613,11 +613,6 @@
 
 * Packages for typescript
    #+BEGIN_SRC  emacs-lisp
-     (use-package flycheck
-       :ensure t
-       :config
-       (add-hook 'typescript-mode-hook 'flycheck-mode))
-
      (defun setup-tide-mode ()
        (interactive)
        (tide-setup)
@@ -662,7 +657,6 @@
        (add-hook 'typescript-mode #'subword-mode))
 
      (use-package tide
-       :init
        :ensure t
        :after (typescript-mode company flycheck)
        :hook ((typescript-mode . tide-setup)
