@@ -123,6 +123,8 @@
         (bind-key "C-c t c" 'multi-vterm)
         (bind-key "C-c t t" 'multi-vterm-dedicated-toggle)
         (bind-key "C-c t n" 'multi-vterm-next)
+        ;; there should be a way to escape and go back to other screen w/ elscreen
+        (bind-key "C-c t z" 'elscreen-select-and-goto)
         )
     #+END_SRC
 
@@ -611,7 +613,7 @@
         :config (which-key-mode))
     #+END_SRC
 
-* Packages for typescript
+* Typescript && react
    #+BEGIN_SRC  emacs-lisp
      (defun setup-tide-mode ()
        (interactive)
@@ -662,6 +664,16 @@
        :hook ((typescript-mode . tide-setup)
               (typescript-mode . tide-hl-identifier-mode)
               (before-save . tide-format-before-save)))
+   #+END_SRC
+
+* Docker
+   #+BEGIN_SRC  emacs-lisp
+     (use-package dockerfile-mode
+       :ensure t
+       )
+     (use-package docker-compose-mode
+       :ensure t
+       )
    #+END_SRC
 
 * Hydra defs
