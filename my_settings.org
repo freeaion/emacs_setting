@@ -1,56 +1,3 @@
-* Emacs Infos
-** emacs general
-   http://planet.emacsen.org/
-   http://sachachua.com/blog/category/geek/emacs/
-
-** use package
-   https://github.com/jwiegley/use-package
-
-** tips on how to
-   <s + tab expands to #+BEGIN.. 
-   then, put "emacs-lisp"
-   C-c ' is for indentation for configuration
-
-** old packages
-   helm-git-grep: helm for git grep, an incremental git-grep(1)
-   helm-ls-git: list git files.
-   rtags + irony + company irony
-   elpy: Emacs Python Development 
-   navi-mode: super fast org mode search & editing
-
-   spaceline & powerline would be enabled in the future.
-
-** something interesting
-    web-mode for html editing
-    better-shell: remote open shell and edit. tramp + shell
-
-** how to address performance issue
-   - Option 1: Disable modes: Start disabling those minor-modes you've listed, and see
-     which one solves you performance issue. I would start with smartparens,
-     auto-complete, line-number and font-lock, and then follow down the list.
-
-     If none of the minor-modes fix your issue, then start commenting out portions of your
-     init file until you find out which snippet was causing this. In any case, ask a new
-     question when you have something more specific.
-
-   - Option 2: The profiler: Invoke M-x profiler-start RET RET (the second RET is to
-     confirm cpu); Do some typing, preferably an entire paragraph or more; Invoke M-x
-     profiler-report.  That will give you a buffer describing the cpu time taken by each
-     function. Hitting TAB on a line expands it to display the functions inside
-     it. Navigate this buffer until you find out which function is taking so much CPU
-     time.
-
-     What do I do afterwards?  Once you find the function or package or snippet causing
-     lag you can (in no particular order):
-
-     Ask a new question here regarding that specific minor-mode (or function or snippet).
-     Report a bug to the package maintainer.  Check the comments at the top of the
-     package's source file. If it contains a URL (specially on github), there's probably
-     an issue tracker there.  Some packages offer a command like M-x PACKAGE-bug-report.
-     His or her email should be at the top of the package's source file.  If it's a
-     built-in package, you can report it with M-x report-emacs-bug.  Even for packages
-     that are not built-in, you can ask for help at the help-gnu-emacs mailing list.
-
 * Custom functions
 ** system functions
    #+BEGIN_SRC emacs-lisp
@@ -64,7 +11,10 @@
        "load the elisp file only if it exists and is readable"
        (if (file-readable-p file)
            (load-file file)))
+  #+END_SRC
 
+** window functions
+   #+BEGIN_SRC emacs-lisp
      (defun split-and-follow-horizontally ()
        (interactive)
        (split-window-below)
@@ -76,15 +26,14 @@
        (split-window-right)
        (balance-windows)
        (other-window 1))
+  #+END_SRC
 
+** editing functions
+   #+BEGIN_SRC emacs-lisp
      (defun kill-whole-word ()
        (interactive)
        (backward-word)
        (kill-word 1))
-
-     (defun kill-curr-buffer ()
-       (interactive)
-       (kill-buffer (current-buffer)))
 
      (defun copy-whole-line ()
        (interactive)
@@ -94,12 +43,9 @@
            (point-at-bol)
            (point-at-eol)))))
 
-     (defun term-mode-toggle ()
-       "Toggles term between line mode and char mode"
+     (defun kill-curr-buffer ()
        (interactive)
-       (if (term-in-line-mode)
-           (term-char-mode)
-         (term-line-mode)))
+       (kill-buffer (current-buffer)))
 
      (defun switch-to-scratch ()
        "Switch to scratch buffer"
@@ -108,6 +54,7 @@
   #+END_SRC
 
 ** programming functions
+*** c/c++ functions
    #+BEGIN_SRC emacs-lisp
      (defun linux-kernel-coding-style/c-lineup-arglist-tabs-only (ignored)
        "Line up argument lists by tabs, not spaces"
@@ -139,18 +86,6 @@
        (define-key c-mode-map (kbd "C-t") 'ff-find-related-file)
        )
 
-     (defun non-google3-cpp-coding-style/setup ()
-       (let ((filename (buffer-file-name)))
-         ;; Enable kernel mode for the appropriate files
-         (when (and filename
-                    (string-match (expand-file-name "~/kernel")
-                                            filename))
-           (define-key c-mode-map (kbd "M-.") 'helm-gtags-dwim)
-           (define-key c-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
-           (unbind-key "\C-t" helm-gtags-mode-map)
-           (define-key c-mode-map (kbd "C-t") 'ff-find-related-file)
-           (message "Setting up indentation for non google c++"))))
-
      (defun my-c++-mode-config ()
        "For use in `c++-mode-hook'."
        (define-key c++-mode-map (kbd "M-,") 'xref-pop-marker-stack)
@@ -161,716 +96,527 @@
        (setq flycheck-clang-language-standard "c++17")
        )
    #+END_SRC
-* Packages not used
-** eshell
-   cd /USER@PUTTYCONFIG:/some/path
-   #+BEGIN_SRC emacs-lisp
-   ;;  (load-if-exists "~/.emacs.d/eshell/eshell_settings.el")
-   #+END_SRC
 
-** rtags
-   #+BEGIN_SRC emacs-lisp
-     ;(use-package rtags
-     ;  :ensure t
-     ;  :after company-rtags
-     ;  :config
-     ;  (rtags-enable-standard-keybindings)
-     ;  (setq rtags-autostart-diagnostics t)
-     ;  (push 'company-rtags company-backends)
-     ;  ;;(define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
-     ;  (bind-keys :map c-mode-base-map ([C-tab] . company-complete))
-     ;
-     ;  ;; for realgud
-     ;  ;; in emacs, M-x load-library realgud
-     ;
-     ;  (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
-     ;  (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
-     ;
-     ;  :bind
-     ;  ([remap xref-find-definitions] . rtags-find-symbol-at-point)
-     ;  ([remap xref-pop-marker-stack] . rtags-location-stack-back)
-     ;  )
-     ;(use-package helm-rtags
-     ;  :ensure t)
-     ;(use-package company-rtags
-     ;  :ensure t)
-   #+END_SRC
-
-** rustic
-   #+BEGIN_SRC emacs-lisp
-     (use-package rustic
-       :ensure t)
-   #+END_SRC
-
-** jinja2
-   #+BEGIN_SRC emacs-lisp
-   ;  (use-package jinja2-mode
-   ;    :ensure t)
-   #+END_SRC
-
-** linum-relative
-   #+BEGIN_SRC emacs-lisp
-   ;  (use-package linum-relative
-   ;    :ensure t
-   ;    :config
-   ;      (setq linum-relative-current-symbol "")
-   ;      (add-hook 'prog-mode-hook 'linum-relative-mode))
-   #+END_SRC
-
-** elpy
-   #+BEGIN_SRC  emacs-lisp
-   ;  (use-package elpy
-   ;    :ensure t
-   ;    :config
-   ;    (elpy-enable)
-   ;    (unbind-key "M-<up>" elpy-mode-map)
-   ;    (unbind-key "M-<down>" elpy-mode-map)
-   ;    (unbind-key "M-<left>" elpy-mode-map)
-   ;    (unbind-key "M-<right>" elpy-mode-map)
-   ;    )
-   #+END_SRC
-
-** hungry-delete
-   #+BEGIN_SRC  emacs-lisp
-    ;(use-package hungry-delete
-    ;  :ensure t
-    ;  :config
-    ;  (global-hungry-delete-mode))
-   #+END_SRC
-
-** helm-tramp
-   https://github.com/masasam/emacs-helm-tramp
-   global-aggressive-indent-mode && editorconfig-mode needs to be disabled
-
-   #+BEGIN_SRC  emacs-lisp
-     ;(use-package helm-tramp
-     ;  :ensure t
-     ;  :init
-     ;  (setq tramp-default-method "scp")
-     ;  (setq helm-tramp-localhost-directory "/root")
-     ;  (add-hook 'helm-tramp-pre-command-hook '(lambda () 
-     ;                                            (projectile-mode 0)))
-     ;  (add-hook 'helm-tramp-quit-hook '(lambda ()
-     ;                                     (projectile-mode 1)))
-     ;  )
-   #+END_SRC
-
-** with-editor
-   #+BEGIN_SRC  emacs-lisp
-    ; (use-package with-editor
-    ;   :ensure t)
-   #+END_SRC
-
-** multi-term
-   this is not for vterm
-   #+BEGIN_SRC  emacs-lisp
-   ;;  (use-package multi-term
-   ;;    :ensure t
-   ;;    :bind (("C-c t c" . multi-term)
-   ;;           ("C-c t r" . rename-buffer)
-   ;;           ("C-c t t" . term-mode-toggle))
-   ;;    :config
-   ;;    (setq multi-term-program "/bin/bash")
-   ;;  )
-   #+END_SRC
-
-** powerline: disabled due to perf issue
-   #+BEGIN_SRC  emacs-lisp
-     ;;(use-package powerline
-     ;;  :ensure t)
-     ;;  ;;:config (powerline-default-theme))
-   #+END_SRC
-** spaceline: disabled due to perf issue
-   #+BEGIN_SRC  emacs-lisp
-     ;;(use-package spaceline
-     ;;  :ensure t
-     ;;  :config 
-     ;;  (spaceline-emacs-theme)
-     ;;  (spaceline-toggle-projectile-root-off)
-     ;;  )
-   #+END_SRC
-
-** org-bullets
-   #+BEGIN_SRC  emacs-lisp
-     ;(use-package org-bullets
-     ;  :ensure t
-     ;  :config
-     ;  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-   #+END_SRC
 * Packages
-** vterm
-   #+BEGIN_SRC emacs-lisp
-     (use-package vterm
-       :ensure t
-       :pin melpa
-       :bind (:map vterm-mode-map ("C-y" . vterm-yank))
-       :config (setq vterm-max-scrollback 100000)
-       )
-     (use-package vterm-toggle
-       :ensure t
-       :init
-       (bind-key "C-c s x" 'vterm-toggle)
-       )
-     (use-package multi-vterm
-       :ensure t
-       :init
-       (bind-key "C-c s c" 'multi-vterm)
-       (bind-key "C-c s t" 'multi-vterm-dedicated-toggle)
-       (bind-key "C-c s n" 'multi-vterm-next)
-       )
-   #+END_SRC
+** packages for systems
+*** tramp
+    #+BEGIN_SRC emacs-lisp
+      (use-package tramp
+        :ensure t
+        :config
+        (setq tramp-default-method "scp")
+        (setq shell-prompt-pattern ":")
+        )
+    #+END_SRC
 
-** tramp
-   #+BEGIN_SRC emacs-lisp
-     (use-package tramp
-       :ensure t
-       :config
-       (setq tramp-default-method "ssh")
-       (setq shell-prompt-pattern ":")
-       )
-   #+END_SRC
+*** vterm
+    #+BEGIN_SRC emacs-lisp
+      (use-package vterm
+        :ensure t
+        :pin melpa
+        :bind (:map vterm-mode-map ("C-y" . vterm-yank))
+        :config (setq vterm-max-scrollback 100000)
+        )
+      (use-package multi-vterm
+        :ensure t
+        :init
+        (bind-key "C-c t c" 'multi-vterm)
+        (bind-key "C-c t t" 'multi-vterm-dedicated-toggle)
+        (bind-key "C-c t n" 'multi-vterm-next)
+        )
+    #+END_SRC
 
-** flycheck
-   #+BEGIN_SRC  emacs-lisp
-     (use-package flycheck
-       :ensure t
-       :init
-       (add-hook 'after-init-hook #'global-flycheck-mode)
-       (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17"))))
-   #+END_SRC
+** packages for editing
+*** avy
+    #+BEGIN_SRC  emacs-lisp
+      (use-package avy
+        :ensure t
+        :bind (("C-:" . avy-goto-char)))
+    #+END_SRC
 
-** persistent-scratch
-   (persistent-scratch-setup-default)
-   #+BEGIN_SRC  emacs-lisp
-     (use-package persistent-scratch
-       :ensure t
-       :config 
-       (persistent-scratch-setup-default)
-       (persistent-scratch-autosave-mode))
-   #+END_SRC
+*** company
+    set company-idle-delay slows down emacs
+    #+BEGIN_SRC  emacs-lisp
+      (use-package company
+        :ensure t
+        :config
+        (setq company-minimum-prefix-length 3)
+        (global-company-mode t))
+    #+END_SRC
 
-** recently
-   #+BEGIN_SRC emacs-lisp
-     (use-package recently
-       :ensure t
-       :config
-       (recently-mode +1)
-       :init
-       (bind-key "C-c o" 'recently-show)
-       )
-   #+END_SRC
+*** company-quickhelp
+    set company-quickhelp-idle-delay slows down emacs
+    #+BEGIN_SRC  emacs-lisp
+      (use-package company-quickhelp
+          :ensure t
+          :config
+          (company-quickhelp-mode))
+    #+END_SRC
 
-** deft
-   #+BEGIN_SRC emacs-lisp
-     (use-package deft
-       :ensure t
-       :bind (("C-c d" . deft))
-       :commands (deft)
-       :config
-       (setq deft-extensions '("org" "txt"))
-       (setq deft-default-extension "txt")
-       (setq deft-directory "~/Documents")
-       (setq deft-text-mode 'org-mode)
-       (setq deft-use-filename-as-title t)
-       (setq deft-use-filter-string-for-filename t)
-       (setq deft-auto-save-interval 0)
-       (setq deft-org-mode-title-prefix t)
-       (setq deft-file-naming-rules
-             '((noslash . "_")
-               (nospace . "_")
-               (case-fn . downcase)))
-       ;;(setq deft-recursive t)
-       )
-   #+END_SRC
+*** expand-region
+    #+BEGIN_SRC  emacs-lisp
+      (use-package expand-region
+        :ensure t
+        :init
+        (bind-key "C-=" 'er/expand-region)
+        (bind-key "C-+" 'er/contract-region)
+        )
+    #+END_SRC
 
-** volatile-highlights
-   #+BEGIN_SRC emacs-lisp
-     (use-package volatile-highlights
-       :ensure t
-       :config
-       (volatile-highlights-mode t))
-   #+END_SRC
+*** highlight-parentheses
+    #+BEGIN_SRC  emacs-lisp
+      (use-package highlight-parentheses
+        :ensure t
+        :init
+        (setq global-highlight-parentheses-mode t)
+        :config
+        (add-hook 'prog-mode-hook 'ws-butler-mode)
+        )
+    #+END_SRC
 
-** tramp
-   #+BEGIN_SRC emacs-lisp
-     (use-package tramp
-       :ensure t
-       :config
-       (setq tramp-default-method "scp")
-       (setq shell-prompt-pattern ":")
-       )
-   #+END_SRC
+*** multiple-cursors
+    #+BEGIN_SRC  emacs-lisp
+      (use-package multiple-cursors
+        :ensure t)
+    #+END_SRC
 
-** linum-relative
-   #+BEGIN_SRC emacs-lisp
-     (use-package linum-relative
-       :ensure t
-       :config
-         (setq linum-relative-current-symbol "")
-         (add-hook 'prog-mode-hook 'linum-relative-mode))
-   #+END_SRC
+*** origami
+    #+BEGIN_SRC  emacs-lisp
+      (use-package origami
+        :ensure t
+        :config (global-origami-mode)
+        :bind (("M-f" . origami-recursively-toggle-node)))
+    #+END_SRC
 
-** diminish
-   #+BEGIN_SRC emacs-lisp
-     (use-package diminish
-       :ensure t)
-   #+END_SRC
+*** symbol-overlay
+    (unbind-key "\C-g" global-map)
+    #+BEGIN_SRC  emacs-lisp
+      (use-package symbol-overlay
+        :ensure t
+        :bind (("M-n" . symbol-overlay-jump-next)
+               ("M-p" . symbol-overlay-jump-prev)
+               ;;("M-S-n" . symbol-overlay-switch-forward)
+               ;;("M-S-p" . symbol-overlay-switch-backward)
+               ;;("C-c c w" . symbol-overlay-save-symbol)
+               ("M-s" . (lambda ()
+                          (interactive)
+                          (symbol-overlay-put)))
+               ))
+    #+END_SRC
 
-** switch-window
-   #+BEGIN_SRC emacs-lisp
-     (use-package switch-window
-       :ensure t
-       :config
-       (setq switch-window-input-style 'minibuffer)
-       (setq switch-window-increase 4)
-       (setq switch-window-threshold 2)
-       (setq switch-window-shortcut-style 'qwerty)
-       (setq switch-window-qwerty-shortcuts
-             '("a" "s" "d" "f" "h" "j" "k" "l"))
-       :bind
-       ([remap other-window] . switch-window))
-   #+END_SRC
+*** undo-tree
+    C-x u : visualize undo/redo tree
+    #+BEGIN_SRC  emacs-lisp
+      (use-package undo-tree
+        :ensure t
+        :init
+        (global-undo-tree-mode)
+        :config
+        (unbind-key "C-/" undo-tree-map)
+        (setq
+         undo-tree-auto-save-history t
+         undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+        )
+    #+END_SRC
 
-** dashboard
-   #+BEGIN_SRC emacs-lisp
-     (use-package dashboard
-       :ensure t
-       :config
-       (dashboard-setup-startup-hook)
-       ;;(defun dashboard-insert-custom ()
-       ;;  (insert "Dired"))
-       ;;(add-to-list 'dashboard-item-generators  '(custom . dashboard-insert-custom))
-       ;;(add-to-list 'dashboard-items '(custom) t)
-       (setq dashboard-items '((recents  . 30)
-                               (projects . 3)
-                               (bookmarks . 5)
-                               (registers . 5)
-                               (agenda . 5)))
-       (setq dashboard-banner-logo-title "Hello Yonghyun")
-       (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-       )
-   #+END_SRC
+*** ws-butler
+    #+BEGIN_SRC  emacs-lisp
+      (use-package ws-butler
+        :ensure t)
+    #+END_SRC
 
-** ibuffer: default package
-   #+BEGIN_SRC  emacs-lisp
-     (setq ibuffer-saved-filter-groups
-           '(("home"
-              ("Sys" (or ;(mode . vterm-mode)
-                         (mode . dired-mode)
-                         (mode . term-mode)
-                         ;(name . "\*Term\*")
-                         (name . "\*Custom\*")
-                         (name . "\*Package\*")
-                         ))
-              ("Srcs" (or (mode . c-mode)
-                          (mode . c++-mode)
-                          (mode . java-mode)
-                          (mode . python-mode)
-                          (mode . rjsx-mode)
-                          (mode . shell-script-mode)
-                          (mode . typescript-mode)
-                          (mode . makefile-mode)
-                          (mode . makefile-gmake-mode)
-                          (mode . sh-mode)
-                          (mode . bazel-mode)
+** package for windows/buffers
+*** ample-theme
+    #+BEGIN_SRC  emacs-lisp
+      (use-package ample-theme
+        :ensure t
+        :config
+        (load-theme 'ample t)
+        ;;(set-face-attribute 'region nil :background "#555")
+        ;;(set-face-attribute 'default nil :height 120)
+        )
+    #+END_SRC
+
+*** buffer-move
+    #+BEGIN_SRC  emacs-lisp
+      (use-package buffer-move
+        :ensure t
+        :bind (("<C-S-up>" . buf-move-up)
+               ("<C-S-down>" . buf-move-down)
+               ("<C-S-left>" . buf-move-left)
+               ("<C-S-right>" . buf-move-right)
+               ))
+    #+END_SRC
+
+*** diminish
+    #+BEGIN_SRC emacs-lisp
+      (use-package diminish
+        :ensure t
+        :config
+        (diminish 'abbrev-mode)
+        (diminish 'ace-isearch-mode)
+        (diminish 'auto-fill-function)
+        (diminish 'flycheck-mode)
+        (diminish 'helm-mode)
+        (diminish 'highlight-parentheses-mode)
+        (diminish 'hl-line-mode)
+        (diminish 'hs-minor-mode)
+        (diminish 'hungry-delete-mode)
+        (diminish 'linum-relative-mode)
+        (diminish 'modern-c++-font-lock-mode)
+        (diminish 'p4-mode)
+        (diminish 'page-break-lines-mode)
+        (diminish 'projectile-mode)
+        (diminish 'recently-mode)
+        (diminish 'undo-tree-mode)
+        (diminish 'visual-line-mode)
+        (diminish 'volatile-highlights-mode)
+        (diminish 'which-key-mode)
+        (diminish 'whitespace-mode)
+        (diminish 'ws-butler-mode)
+        )
+    #+END_SRC
+
+*** elscreen
+    #+BEGIN_SRC  emacs-lisp
+      (use-package elscreen
+        :ensure t
+        :init
+        (elscreen-start))
+    #+END_SRC
+
+*** ibuffer: default package
+    #+BEGIN_SRC  emacs-lisp
+      (use-package ibuffer-projectile
+        :ensure t)
+      (setq ibuffer-saved-filter-groups
+            '(("home"
+               ("Sys" (or ;(mode . vterm-mode)
+                          (mode . dired-mode)
+                          (mode . term-mode)
+                          ;(name . "\*Term\*")
+                          (name . "\*Custom\*")
+                          (name . "\*Package\*")
                           ))
-              ("Org" (or (mode . org-mode)
-                         (mode . deft-mode)
-                         (mode . rst-mode)
-                         ))
-              ("Term" (or (mode . vterm-mode)
-                         ))
-              ("Info" (or (name . "\*P4\*")
-                          (name . "\*Compilation\*")
+               ("Srcs" (or (mode . c-mode)
+                           (mode . c++-mode)
+                           (mode . java-mode)
+                           (mode . python-mode)
+                           (mode . rjsx-mode)
+                           (mode . shell-script-mode)
+                           (mode . typescript-mode)
+                           (mode . makefile-mode)
+                           (mode . makefile-gmake-mode)
+                           (mode . sh-mode)
+                           (mode . bazel-mode)
+                           ))
+               ("Org" (or (mode . org-mode)
+                          (mode . deft-mode)
+                          (mode . rst-mode)
                           ))
-              ("Magit" (or (mode . magit-status-mode)
-                           (mode . magit-revision-mode)
-                           (mode . magit-diff-mode)
+               ("Term" (or (mode . vterm-mode)
                           ))
-              ("Help" (or (name . "\*Help\*")
-                          (name . "\*Apropos\*")
-                          (name . "\*Flycheck\*")
-                          (name . "\*info\*")))
-              ("ETC" (or (name . "\*Fundamental\*")
-                         (name . "\*Hmm\*")
-                         (name . "\*Lisp\*")
-                         (name . "\*Tags\*")))
-              )))
-   #+END_SRC
+               ("Info" (or (name . "\*P4\*")
+                           (name . "\*Compilation\*")
+                           ))
+               ("Magit" (or (mode . magit-status-mode)
+                            (mode . magit-revision-mode)
+                            (mode . magit-diff-mode)
+                           ))
+               ("Help" (or (name . "\*Help\*")
+                           (name . "\*Apropos\*")
+                           (name . "\*Flycheck\*")
+                           (name . "\*info\*")))
+               ("ETC" (or (name . "\*Fundamental\*")
+                          (name . "\*Hmm\*")
+                          (name . "\*Lisp\*")
+                          (name . "\*Tags\*")))
+               )))
+    #+END_SRC
 
-** company
-   set company-idle-delay slows down emacs
-   #+BEGIN_SRC  emacs-lisp
-     (use-package company
-       :ensure t
-       :config
-       (setq company-minimum-prefix-length 3)
-       (global-company-mode t))
-   #+END_SRC
+*** linum-relative
+    #+BEGIN_SRC emacs-lisp
+      (use-package linum-relative
+        :ensure t
+        :config
+          (setq linum-relative-current-symbol "")
+          (add-hook 'prog-mode-hook 'linum-relative-mode))
+    #+END_SRC
 
-** company-quickhelp
-   set company-quickhelp-idle-delay slows down emacs
-   #+BEGIN_SRC  emacs-lisp
-     (use-package company-quickhelp
-         :ensure t
-         :config
-         (company-quickhelp-mode))
-   #+END_SRC
+*** volatile-highlights
+    #+BEGIN_SRC emacs-lisp
+      (use-package volatile-highlights
+        :ensure t
+        :config
+        (volatile-highlights-mode t))
+    #+END_SRC
 
-** avy
-   #+BEGIN_SRC  emacs-lisp
-     (use-package avy
-       :ensure t
-       :bind (("C-." . avy-goto-char)))
-   #+END_SRC
+*** zoom-window
+    #+BEGIN_SRC  emacs-lisp
+      (use-package zoom-window
+        :ensure t
+        :init
+        (setq zoom-window-mode-line-color "DarkGreen")
+        :bind (("C-x C-z" . zoom-window-zoom))
+        )
+    #+END_SRC
 
-** buffer-move
-   #+BEGIN_SRC  emacs-lisp
-     (use-package buffer-move
-       :ensure t
-       :bind (("<C-S-up>" . buf-move-up)
-              ("<C-S-down>" . buf-move-down)
-              ("<C-S-left>" . buf-move-left)
-              ("<C-S-right>" . buf-move-right)
-              ))
-   #+END_SRC
+** helm packages
+*** helm
+    #+BEGIN_SRC  emacs-lisp
+      (use-package helm
+        :ensure t
+        :bind (("C-c h" . helm-command-prefix)
+               ("C-x f" . helm-find-files)
+               ("M-x" . helm-M-x)
+               ("M-y" . helm-show-kill-ring)
+               :map helm-map
+               ("<tab>" . helm-execute-persistent-action )
+               ("C-i" . helm-execute-persistent-action)
+               ("C-z" . helm-select-action))
+        :init (setq
+               helm-M-x-fuzzy-match        t
+               helm-buffers-fuzzy-matching t
+               helm-recentf-fuzzy-match    t
+               helm-semantic-fuzzy-match   t
+               helm-imenu-fuzzy-match      t
+               helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+               helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+               helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+               helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+               helm-ff-file-name-history-use-recentf t)
+        :config 
+        (require 'helm-config)
+        )
+    #+END_SRC
 
-** ibuffer-projectile
-   #+BEGIN_SRC  emacs-lisp
-     (use-package ibuffer-projectile
-       :ensure t)
-   #+END_SRC
+*** helm-ag
+    #+BEGIN_SRC  emacs-lisp
+      (use-package helm-ag
+        :ensure t
+        )
+    #+END_SRC
 
-** multi-term
-   #+BEGIN_SRC  emacs-lisp
-     (use-package multi-term
-       :ensure t)
-   #+END_SRC
+*** helm-bm
+    #+BEGIN_SRC  emacs-lisp
+      (use-package helm-bm
+        :ensure t
+        :bind (("C-c b" . helm-bm)))
+    #+END_SRC
 
-** modern-cpp-font-lock
-   #+BEGIN_SRC  emacs-lisp
-     (use-package modern-cpp-font-lock
-       :ensure t
-       :init
-       (modern-c++-font-lock-global-mode))
-   #+END_SRC
+*** helm-company
+    #+BEGIN_SRC  emacs-lisp
+           (use-package helm-company
+             :ensure t
+             :bind (
+                    :map company-mode-map
+                    ("C-/" . helm-company)
+                    :map company-active-map 
+                    ("C-/" . helm-company)
+                    )
+             )
+    #+END_SRC
 
-** elscreen
-   #+BEGIN_SRC  emacs-lisp
-     (use-package elscreen
-       :ensure t
-       :init
-       (elscreen-start))
-   #+END_SRC
-
-** magit
-   #+BEGIN_SRC  emacs-lisp
-     (use-package magit
-       :ensure t
-       :bind (("C-x g" . magit-status)))
-   #+END_SRC
+*** helm-elscreen
+    #+BEGIN_SRC  emacs-lisp
+      (use-package helm-elscreen
+        :ensure t
+        :bind (("C-z h" . helm-elscreen)))
+    #+END_SRC
    
-** multiple-cursors
-   #+BEGIN_SRC  emacs-lisp
-     (use-package multiple-cursors
-       :ensure t)
-   #+END_SRC
+*** helm-projectile
+    #+BEGIN_SRC  emacs-lisp
+      (use-package helm-projectile
+        :ensure t
+        :bind (("C-x b" . helm-projectile-switch-to-buffer))
+        :config
+        (helm-projectile-on))
+    #+END_SRC
 
-** projectile
-   #+BEGIN_SRC  emacs-lisp
-     (use-package projectile
-       :ensure t
-       :config
-       (projectile-mode +1)
-       )
-   #+END_SRC
+*** helm-swoop
+    #+BEGIN_SRC  emacs-lisp
+      (use-package helm-swoop
+        :ensure t
+        :bind (("M-i" . helm-swoop)
+               ("M-S-i"  . helm-swoop-back-to-last-point)
+               ("C-c M-i" . helm-multi-swoop)
+               ("C-x M-i" . helm-multi-swoop-all)
+               :map isearch-mode-map
+               ("M-i" . helm-swoop-from-isearch)
+               :map helm-swoop-map
+               ("M-i" . helm-multi-swoop-all-from-helm-swoop)
+               ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop)
+               ("C-r" . helm-previous-line)
+               ("C-s" . helm-next-line)
+               :map helm-multi-swoop-map
+               ("C-r" . helm-previous-line)
+               ("C-s" . helm-next-line)
+               )
+        :init
+        (setq
+         ;; Save buffer when helm-multi-swoop-edit complete
+         helm-multi-swoop-edit-save t
 
-** helm
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm
-       :ensure t
-       :bind (("C-c h" . helm-command-prefix)
-              ("C-x f" . helm-find-files)
-              ("M-x" . helm-M-x)
-              ("M-y" . helm-show-kill-ring)
-              :map helm-map
-              ("<tab>" . helm-execute-persistent-action )
-              ("C-i" . helm-execute-persistent-action)
-              ("C-z" . helm-select-action))
-       :init (setq
-              helm-M-x-fuzzy-match        t
-              helm-buffers-fuzzy-matching t
-              helm-recentf-fuzzy-match    t
-              helm-semantic-fuzzy-match   t
-              helm-imenu-fuzzy-match      t
-              helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-              helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-              helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-              helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-              helm-ff-file-name-history-use-recentf t)
-       :config 
-       (require 'helm-config)
-       )
-   #+END_SRC
+         ;; If this value is t, split window inside the current window
+         helm-swoop-split-with-multiple-windows nil
 
-** helm-ag
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-ag
-       :ensure t
-       :bind (("C-," . helm-ag-pop-stack))
-       )
-   #+END_SRC
+         ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+         helm-swoop-split-direction 'split-window-vertically
 
-** helm-company
-   #+BEGIN_SRC  emacs-lisp
-          (use-package helm-company
-            :ensure t
-            :bind (
-                   :map company-mode-map
-                   ("C-/" . helm-company)
-                   :map company-active-map 
-                   ("C-/" . helm-company)
-                   )
-            )
-   #+END_SRC
+         ;; If nil, you can slightly boost invoke speed in exchange for text color
+         helm-swoop-speed-or-color nil
 
-** helm-elscreen
-   ;#+BEGIN_SRC  emacs-lisp
-   ;  (use-package helm-elscreen
-   ;    :ensure t
-   ;    :bind (("C-z h" . helm-elscreen)))
-   ;#+END_SRC
-   
-** helm-projectile
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-projectile
-       :ensure t
-       :bind (("C-x b" . helm-projectile-switch-to-buffer))
-       :config
-       (helm-projectile-on))
-   #+END_SRC
+         ;; Go to the opposite side of line from the end or beginning of line
+         helm-swoop-move-to-line-cycle t
 
-** helm-swoop
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-swoop
-       :ensure t
-       :bind (("M-i" . helm-swoop)
-              ("M-S-i"  . helm-swoop-back-to-last-point)
-              ("C-c M-i" . helm-multi-swoop)
-              ("C-x M-i" . helm-multi-swoop-all)
-              :map isearch-mode-map
-              ("M-i" . helm-swoop-from-isearch)
-              :map helm-swoop-map
-              ("M-i" . helm-multi-swoop-all-from-helm-swoop)
-              ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop)
-              ("C-r" . helm-previous-line)
-              ("C-s" . helm-next-line)
-              :map helm-multi-swoop-map
-              ("C-r" . helm-previous-line)
-              ("C-s" . helm-next-line)
-              )
-       :init
-       (setq
-        ;; Save buffer when helm-multi-swoop-edit complete
-        helm-multi-swoop-edit-save t
+         ;; Optional face for line numbers
+         ;; Face name is `helm-swoop-line-number-face`
+         helm-swoop-use-line-number-face t)
+        :config (helm-mode))
+    #+END_SRC
 
-        ;; If this value is t, split window inside the current window
-        helm-swoop-split-with-multiple-windows nil
+*** helm-tramp
+    https://github.com/masasam/emacs-helm-tramp
+    global-aggressive-indent-mode && editorconfig-mode needs to be disabled
 
-        ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
-        helm-swoop-split-direction 'split-window-vertically
+    #+BEGIN_SRC  emacs-lisp
+      (use-package helm-tramp
+        :ensure t
+        :init
+        (setq tramp-default-method "scp")
+        (setq helm-tramp-localhost-directory "/root")
+        (add-hook 'helm-tramp-pre-command-hook '(lambda () 
+                                                  (projectile-mode 0)))
+        (add-hook 'helm-tramp-quit-hook '(lambda ()
+                                           (projectile-mode 1)))
+        )
+    #+END_SRC
 
-        ;; If nil, you can slightly boost invoke speed in exchange for text color
-        helm-swoop-speed-or-color nil
+** special packages
+*** dashboard
+    #+BEGIN_SRC emacs-lisp
+      (use-package dashboard
+        :ensure t
+        :config
+        (dashboard-setup-startup-hook)
+        ;;(defun dashboard-insert-custom ()
+        ;;  (insert "Dired"))
+        ;;(add-to-list 'dashboard-item-generators  '(custom . dashboard-insert-custom))
+        ;;(add-to-list 'dashboard-items '(custom) t)
+        (setq dashboard-items '((recents  . 30)
+                                (projects . 3)
+                                (bookmarks . 5)
+                                (registers . 5)
+                                (agenda . 5)))
+        (setq dashboard-banner-logo-title "Hello Yonghyun")
+        (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+        )
+    #+END_SRC
 
-        ;; Go to the opposite side of line from the end or beginning of line
-        helm-swoop-move-to-line-cycle t
+*** deft
+    #+BEGIN_SRC emacs-lisp
+      (use-package deft
+        :ensure t
+        :bind (("C-c d" . deft))
+        :commands (deft)
+        :config
+        (setq deft-extensions '("org" "txt"))
+        (setq deft-default-extension "txt")
+        (setq deft-directory "~/Documents")
+        (setq deft-text-mode 'org-mode)
+        (setq deft-use-filename-as-title t)
+        (setq deft-use-filter-string-for-filename t)
+        (setq deft-auto-save-interval 0)
+        (setq deft-org-mode-title-prefix t)
+        (setq deft-file-naming-rules
+              '((noslash . "_")
+                (nospace . "_")
+                (case-fn . downcase)))
+        ;;(setq deft-recursive t)
+        )
+    #+END_SRC
 
-        ;; Optional face for line numbers
-        ;; Face name is `helm-swoop-line-number-face`
-        helm-swoop-use-line-number-face t)
-       :config (helm-mode))
-   #+END_SRC
+*** persistent-scratch
+    (persistent-scratch-setup-default)
+    #+BEGIN_SRC  emacs-lisp
+      (use-package persistent-scratch
+        :ensure t
+        :config 
+        (persistent-scratch-setup-default)
+        (persistent-scratch-autosave-mode))
+    #+END_SRC
 
-** helm-tramp
-   https://github.com/masasam/emacs-helm-tramp
-   global-aggressive-indent-mode && editorconfig-mode needs to be disabled
+*** recently
+    #+BEGIN_SRC emacs-lisp
+      (use-package recently
+        :ensure t
+        :config
+        (recently-mode +1)
+        :init
+        (bind-key "C-c o" 'recently-show)
+        )
+    #+END_SRC
 
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-tramp
-       :ensure t
-       :init
-       (setq tramp-default-method "scp")
-       (setq helm-tramp-localhost-directory "/root")
-       (add-hook 'helm-tramp-pre-command-hook '(lambda () 
-                                                 (projectile-mode 0)))
-       (add-hook 'helm-tramp-quit-hook '(lambda ()
-                                          (projectile-mode 1)))
-       )
-   #+END_SRC
+** misc packages
 
-** helm-gtags
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-gtags
-       :ensure t
-       :init
-       (setq
-        helm-gtags-ignore-case t
-        helm-gtags-auto-update t
-        helm-gtags-use-input-at-cursor t
-        helm-gtags-pulse-at-cursor t
-        helm-gtags-suggested-key-mapping t))
-   #+END_SRC
+*** bookmark manager
+    #+BEGIN_SRC  emacs-lisp
+      (use-package bm
+        :ensure t
+        :bind (("C-b" . bm-toggle)
+               ("<C-down>" . bm-next)
+               ("<C-up>" . bm-previous))
+        )
+    #+END_SRC
 
-** ws-butler
-   #+BEGIN_SRC  emacs-lisp
-     (use-package ws-butler
-       :ensure t)
-   #+END_SRC
+*** flycheck
+    #+BEGIN_SRC  emacs-lisp
+      (use-package flycheck
+        :ensure t
+        :init
+        (add-hook 'after-init-hook #'global-flycheck-mode)
+        (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17"))))
+    #+END_SRC
 
-** undo-tree
-   C-x u : visualize undo/redo tree
-   #+BEGIN_SRC  emacs-lisp
-     (use-package undo-tree
-       :ensure t
-       :init
-       (global-undo-tree-mode)
-       :config
-       (unbind-key "C-/" undo-tree-map)
-       (setq
-        undo-tree-auto-save-history t
-        undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-       )
-   #+END_SRC
+*** hydra
+    #+BEGIN_SRC  emacs-lisp
+      (use-package hydra
+        :ensure t
+        :init
+        (setq zoom-window-mode-line-color "DarkGreen")
+        )
+    #+END_SRC
 
-** highlight-parentheses
-   #+BEGIN_SRC  emacs-lisp
-     (use-package highlight-parentheses
-       :ensure t)
-   #+END_SRC
+*** magit
+    #+BEGIN_SRC  emacs-lisp
+      (use-package magit
+        :ensure t
+        :bind (("C-x g" . magit-status)))
+    #+END_SRC
 
-** expand-region
-   #+BEGIN_SRC  emacs-lisp
-     (use-package expand-region
-       :ensure t)
-   #+END_SRC
+*** org-bullets
+    #+BEGIN_SRC  emacs-lisp
+      (use-package org-bullets
+        :ensure t
+        :config
+        (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+    #+END_SRC
 
-** origami
-   #+BEGIN_SRC  emacs-lisp
-     (use-package origami
-       :ensure t
-       :config (global-origami-mode)
-       :bind (("M-f" . origami-recursively-toggle-node)))
-   #+END_SRC
+*** projectile
+    #+BEGIN_SRC  emacs-lisp
+      (use-package projectile
+        :ensure t
+        :config
+        (projectile-mode +1)
+        )
+    #+END_SRC
 
-** symbol-overlay
-   (unbind-key "\C-g" global-map)
-   #+BEGIN_SRC  emacs-lisp
-     (use-package symbol-overlay
-       :ensure t
-       :bind (("M-n" . symbol-overlay-jump-next)
-              ("M-p" . symbol-overlay-jump-prev)
-              ("M-S-n" . symbol-overlay-switch-forward)
-              ("M-S-p" . symbol-overlay-switch-backward)
-              ("C-c c w" . symbol-overlay-save-symbol)
-              ("M-s" . (lambda ()
-                         (interactive)
-                         (symbol-overlay-put)))
-              ))
-   #+END_SRC
-
-** ample-theme
-   #+BEGIN_SRC  emacs-lisp
-     (use-package ample-theme
-       :ensure t
-       :config
-       (load-theme 'ample t)
-       (set-face-attribute 'region nil :background "#555")
-       (set-face-attribute 'default nil :height 120)
-       )
-   #+END_SRC
-
-** which-key
-   #+BEGIN_SRC  emacs-lisp
-     (use-package which-key
-       :ensure t
-       :config (which-key-mode))
-   #+END_SRC
-
-** ws-butler
-   #+BEGIN_SRC  emacs-lisp
-     (use-package ws-butler
-       :ensure t)
-   #+END_SRC
-
-** multiple-cursors
-   #+BEGIN_SRC  emacs-lisp
-     (use-package multiple-cursors
-       :ensure t)
-   #+END_SRC
-
-** org-bullets
-   #+BEGIN_SRC  emacs-lisp
-     (use-package org-bullets
-       :ensure t
-       :config
-       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-   #+END_SRC
-
-** bm: bookmark manager
-   #+BEGIN_SRC  emacs-lisp
-     (use-package bm
-       :ensure t
-       :bind (("C-b" . bm-toggle)
-              ("<C-down>" . bm-next)
-              ("<C-up>" . bm-previous))
-       )
-   #+END_SRC
-
-** helm-bm
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-bm
-       :ensure t
-       :bind (("C-c b" . helm-bm)))
-   #+END_SRC
-
-** zoom-window
-   #+BEGIN_SRC  emacs-lisp
-     (use-package zoom-window
-       :ensure t
-       :bind (("C-x C-z" . zoom-window-zoom))
-       :init
-       (setq zoom-window-mode-line-color "DarkGreen")
-       )
-   #+END_SRC
-
-** hydra
-   #+BEGIN_SRC  emacs-lisp
-     (use-package hydra
-       :ensure t
-       :init
-       (setq zoom-window-mode-line-color "DarkGreen")
-       )
-   #+END_SRC
-** dired-recent
-   #+BEGIN_SRC  emacs-lisp
-     (use-package dired-recent
-       :ensure t
-       :config (dired-recent-mode)
-       )
-   #+END_SRC
-
-** dired-subtree
-   #+BEGIN_SRC  emacs-lisp
-     (use-package dired-subtree
-       :ensure t
-       :bind (:map dired-mode-map
-                   ("q" . kill-this-buffer)
-                   ("i" . dired-subtree-toggle)
-                   ("C-M-u" . dired-subtree-up)
-                   ("C-M-d" . dired-subtree-down)
-                   ))
-   #+END_SRC
+*** which-key
+    #+BEGIN_SRC  emacs-lisp
+      (use-package which-key
+        :ensure t
+        :config (which-key-mode))
+    #+END_SRC
 
 * Packages for typescript
    #+BEGIN_SRC  emacs-lisp
@@ -887,21 +633,6 @@
        (eldoc-mode +1)
        (tide-hl-identifier-mode +1)
        (company-mode +1))
-
-     (use-package company
-       :ensure t
-       :config
-       (setq company-show-numbers t)
-       (setq company-tooltip-align-annotations t)
-       (setq company-tooltip-flip-when-above t)
-       (global-company-mode))
-
-     (use-package company-quickhelp
-       :ensure t
-       :init
-       (company-quickhelp-mode 1)
-       (use-package pos-tip
-         :ensure t))
 
      (use-package web-mode
        :ensure t
@@ -944,16 +675,6 @@
        :hook ((typescript-mode . tide-setup)
               (typescript-mode . tide-hl-identifier-mode)
               (before-save . tide-format-before-save)))
-   #+END_SRC
-
-** persistent-scratch
-   (persistent-scratch-setup-default)
-   #+BEGIN_SRC  emacs-lisp
-     (use-package persistent-scratch
-       :ensure t
-       :config 
-       (persistent-scratch-setup-default)
-       (persistent-scratch-autosave-mode))
    #+END_SRC
 
 * Hydra defs
@@ -1126,6 +847,41 @@
        ("q"   nil "cancel" :color blue))
    #+END_SRC
 
+
+** Hydra projectile
+  #+BEGIN_SRC emacs-lisp
+    (defhydra expand-copy (global-map "C-c r")
+      "Region"
+      ("j" er/expand-region "expend")
+      ("k" er/contract-region "contract")
+      ("q" nil "quit")
+      ("c" copy-region-as-kill "copy" :exit t)
+      ("r" copy-to-register "copy to reg" :exit t))
+  #+END_SRC
+
+** Hydra helm-ag
+  #+BEGIN_SRC emacs-lisp
+    (defhydra ag (global-map "C-c a" :hint nil)
+      "Helm ag "
+      ("a" helm-do-ag :exit t)
+      ("b" helm-do-ag-buffers :exit t)
+      ("r" helm-projectile-ag :exit t)
+      ("f" helm-do-ag-this-file :exit t)
+      ("c" helm-ag-clear-stack :exit t)
+      ("p" helm-ag-pop-stack :exit t)
+      ("P" helm-do-ag-project-root :exit t)
+      ("q" nil))
+  #+END_SRC
+
+** Hydra system commands
+  #+BEGIN_SRC emacs-lisp
+    (defhydra system (global-map "C-c s" :hint nil)
+      "system "
+      ("b" compile :exit t)
+      ;("t" vterm :exit t)
+      ("q" nil))
+  #+END_SRC
+
 * Behavior configs
   - alias y to yes and n to no
     #+BEGIN_SRC emacs-lisp
@@ -1157,11 +913,6 @@
 * Mode hooks
 ** system hooks
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'shell-mode-hook 'with-editor-export-editor)
-     (add-hook 'shell-mode-hook 'with-editor-export-git-editor)
-     (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-     ;(add-hook 'term-exec-hook  'with-editor-export-editor)
-
      (add-hook 'ibuffer-mode-hook
                '(lambda ()
                   (ibuffer-auto-mode 1)
@@ -1174,29 +925,13 @@
      (add-hook 'org-mode-hook
                (lambda()
                  (setq-default fill-column 90)))
-
-     ;(add-hook 'term-mode-hook
-     ;          (lambda ()
-     ;            (define-key term-raw-map (kbd "M-x") 'helm-M-x)
-     ;            (define-key term-raw-map (kbd "C-y") 'term-paste)
-     ;            (define-key term-raw-map (kbd "C-c q") 'comint-clear-buffer)
-     ;            (define-key term-raw-map (kbd "C-c C-e") 'term-send-esc)
-     ;            (define-key term-mode-map (kbd "M-x") 'helm-M-x)
-     ;            (define-key term-mode-map (kbd "C-y") 'term-paste)
-     ;            (define-key term-mode-map (kbd "C-c q") 'comint-clear-buffer)
-     ;            (define-key term-mode-map (kbd "C-c C-e") 'term-send-esc)
-     ;            ))
    #+END_SRC
 
 ** programming hooks
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'prog-mode-hook 'highlight-parentheses-mode)
-     ;(add-hook 'prog-mode-hook 'ws-butler-mode)
      (add-hook 'prog-mode-hook 'hs-minor-mode)
      (add-hook 'prog-mode-hook 'whitespace-mode)
-
      (add-hook 'c-mode-hook 'my-c-mode-config)
-
      (add-hook 'c-mode-hook
                (lambda ()
                  (c-add-style "linux-kernel"
@@ -1204,27 +939,13 @@
                                          (arglist-cont-nonempty
                                           c-lineup-gcc-asm-reg
                                           linux-kernel-coding-style/c-lineup-arglist-tabs-only))))))
-
      (add-hook 'c-mode-hook 'linux-kernel-coding-style/setup)
-
-     (add-hook 'c++-mode-hook 'non-google3-cpp-coding-style/setup)
-     (add-hook 'c++-mode-hook 'helm-gtags-mode)
-
+     ;;(add-hook 'c++-mode-hook 'helm-gtags-mode)
      ;;(add-hook 'c++-mode-hook 'my-c++-mode-config)
-
-     (add-hook 'sh-mode-hook (lambda () (setq smie-indent-basic 4 indent-tabs-mode t tab-width 4 sh-basic-offset 4)))
 
      (add-hook 'makefile-mode-hook
                (lambda()
                  (setq-default fill-column 75)))
-
-     (add-hook 'go-mode-hook
-               (lambda()
-                 (whitespace-mode -1)))
-
-     ;;(add-hook 'go-mode-hook
-     ;;          (lambda()
-     ;;            (setq whitespace-line-column 250)))
    #+END_SRC
 
 ** background hooks
@@ -1256,19 +977,12 @@
   (bind-key "C-x v" 'view-file)
   (bind-key "C-c e" 'switch-to-scratch)
   (bind-key "C-c m" 'multiple-cursors-hydra/body)
-  (bind-key "C-c k w" 'kill-whole-word)
-  (bind-key "C-c k l" 'kill-whole-line)
   (bind-key "C-x 3" 'split-and-follow-vertically)
   (bind-key "C-x 2" 'split-and-follow-horizontally)
+  (bind-key "C-c k w" 'kill-whole-word)
+  (bind-key "C-c k l" 'kill-whole-line)
   (bind-key "C-c c l" 'copy-whole-line)
   (bind-key "C-x k" 'kill-curr-buffer)
-
-  ;;keep cursor at same position when scrolling
-  ;;scroll window up/down by one line
-  (setq scroll-preserve-screen-position 1)
-  ;;(global-set-key (kbd "C-M-n") (kbd "C-u 1 C-v"))
-  ;;(global-set-key (kbd "C-M-p") (kbd "C-u 1 M-v"))
-
   #+END_SRC
 
 * Keys: Mode specifics
@@ -1278,34 +992,6 @@
   (unbind-key "M-<left>" org-mode-map)
   (unbind-key "M-<right>" org-mode-map)
   ;(unbind-key "C-v" term-raw-map)
-  #+END_SRC
-
-* Keys: Hydra
-  #+BEGIN_SRC emacs-lisp
-    (defhydra expand-copy (global-map "C-c r")
-      "Region"
-      ("j" er/expand-region "expend")
-      ("k" er/contract-region "contract")
-      ("q" nil "quit")
-      ("c" copy-region-as-kill "copy" :exit t)
-      ("r" copy-to-register "copy to reg" :exit t))
-
-    (defhydra ag (global-map "C-c a" :hint nil)
-      "Helm ag "
-      ("a" helm-do-ag :exit t)
-      ("b" helm-do-ag-buffers :exit t)
-      ("r" helm-projectile-ag :exit t)
-      ("f" helm-do-ag-this-file :exit t)
-      ("c" helm-ag-clear-stack :exit t)
-      ("p" helm-ag-pop-stack :exit t)
-      ("P" helm-do-ag-project-root :exit t)
-      ("q" nil))
-
-    (defhydra system (global-map "C-c s" :hint nil)
-      "system "
-      ("b" compile :exit t)
-      ;("t" vterm :exit t)
-      ("q" nil))
   #+END_SRC
 
 * Mouse settings
@@ -1332,6 +1018,10 @@
 
 * ETC
   #+BEGIN_SRC emacs-lisp
+    ;;keep cursor at same position when scrolling
+    ;;scroll window up/down by one line
+    (setq scroll-preserve-screen-position 1)
+
     (global-hl-line-mode t)
     (global-auto-revert-mode 1)
     (setq auto-revert-verbose nil)
@@ -1352,29 +1042,6 @@
 
     ;; remove scrollbar
     (scroll-bar-mode -1)
-
-    (diminish 'hungry-delete-mode)
-    (diminish 'undo-tree-mode)
-    (diminish 'helm-mode)
-    (diminish 'hs-minor-mode)
-    (diminish 'ace-isearch-mode)
-    (diminish 'hl-line-mode)
-    (diminish 'page-break-lines-mode)
-    (diminish 'which-key-mode)
-    (diminish 'flycheck-mode)
-    (diminish 'auto-fill-function)
-    (diminish 'visual-line-mode)
-    (diminish 'projectile-mode)
-    (diminish 'p4-mode)
-    (diminish 'modern-c++-font-lock-mode)
-    (diminish 'whitespace-mode)
-    (diminish 'highlight-parentheses-mode)
-    ;(diminish 'ws-butler-mode)
-    (diminish 'linum-relative-mode)
-    (diminish 'abbrev-mode)
-    (diminish 'volatile-highlights-mode)
-    (diminish 'recently-mode)
-    (diminish 'helm-mode)
 
     ;; setup user home directory to use custom lisp package
     ;;(defvar use-home)
@@ -1479,3 +1146,219 @@
          ) auto-mode-alist))
   #+END_SRC
 
+* Emacs Infos
+** emacs general
+   http://planet.emacsen.org/
+   http://sachachua.com/blog/category/geek/emacs/
+
+** use package
+   https://github.com/jwiegley/use-package
+
+** tips on how to
+   <s + tab expands to #+BEGIN.. 
+   then, put "emacs-lisp"
+   C-c ' is for indentation for configuration
+
+** old packages
+   helm-git-grep: helm for git grep, an incremental git-grep(1)
+   helm-ls-git: list git files.
+   rtags + irony + company irony
+   elpy: Emacs Python Development 
+   navi-mode: super fast org mode search & editing
+
+   spaceline & powerline would be enabled in the future.
+
+** something interesting
+    web-mode for html editing
+    better-shell: remote open shell and edit. tramp + shell
+
+** how to address performance issue
+   - Option 1: Disable modes: Start disabling those minor-modes you've listed, and see
+     which one solves you performance issue. I would start with smartparens,
+     auto-complete, line-number and font-lock, and then follow down the list.
+
+     If none of the minor-modes fix your issue, then start commenting out portions of your
+     init file until you find out which snippet was causing this. In any case, ask a new
+     question when you have something more specific.
+
+   - Option 2: The profiler: Invoke M-x profiler-start RET RET (the second RET is to
+     confirm cpu); Do some typing, preferably an entire paragraph or more; Invoke M-x
+     profiler-report.  That will give you a buffer describing the cpu time taken by each
+     function. Hitting TAB on a line expands it to display the functions inside
+     it. Navigate this buffer until you find out which function is taking so much CPU
+     time.
+
+     What do I do afterwards?  Once you find the function or package or snippet causing
+     lag you can (in no particular order):
+
+     Ask a new question here regarding that specific minor-mode (or function or snippet).
+     Report a bug to the package maintainer.  Check the comments at the top of the
+     package's source file. If it contains a URL (specially on github), there's probably
+     an issue tracker there.  Some packages offer a command like M-x PACKAGE-bug-report.
+     His or her email should be at the top of the package's source file.  If it's a
+     built-in package, you can report it with M-x report-emacs-bug.  Even for packages
+     that are not built-in, you can ask for help at the help-gnu-emacs mailing list.
+
+
+* Packages not used
+** eshell
+   cd /USER@PUTTYCONFIG:/some/path
+   #+BEGIN_SRC emacs-lisp
+   ;;  (load-if-exists "~/.emacs.d/eshell/eshell_settings.el")
+   #+END_SRC
+
+** rtags
+   #+BEGIN_SRC emacs-lisp
+     ;(use-package rtags
+     ;  :ensure t
+     ;  :after company-rtags
+     ;  :config
+     ;  (rtags-enable-standard-keybindings)
+     ;  (setq rtags-autostart-diagnostics t)
+     ;  (push 'company-rtags company-backends)
+     ;  ;;(define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
+     ;  (bind-keys :map c-mode-base-map ([C-tab] . company-complete))
+     ;
+     ;  ;; for realgud
+     ;  ;; in emacs, M-x load-library realgud
+     ;
+     ;  (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
+     ;  (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
+     ;
+     ;  :bind
+     ;  ([remap xref-find-definitions] . rtags-find-symbol-at-point)
+     ;  ([remap xref-pop-marker-stack] . rtags-location-stack-back)
+     ;  )
+     ;(use-package helm-rtags
+     ;  :ensure t)
+     ;(use-package company-rtags
+     ;  :ensure t)
+   #+END_SRC
+
+** rustic
+   #+BEGIN_SRC emacs-lisp
+     ;;(use-package rustic
+     ;;  :ensure t)
+   #+END_SRC
+
+** jinja2
+   #+BEGIN_SRC emacs-lisp
+   ;  (use-package jinja2-mode
+   ;    :ensure t)
+   #+END_SRC
+
+** elpy
+   #+BEGIN_SRC  emacs-lisp
+   ;  (use-package elpy
+   ;    :ensure t
+   ;    :config
+   ;    (elpy-enable)
+   ;    (unbind-key "M-<up>" elpy-mode-map)
+   ;    (unbind-key "M-<down>" elpy-mode-map)
+   ;    (unbind-key "M-<left>" elpy-mode-map)
+   ;    (unbind-key "M-<right>" elpy-mode-map)
+   ;    )
+   #+END_SRC
+
+** hungry-delete
+   #+BEGIN_SRC  emacs-lisp
+    ;(use-package hungry-delete
+    ;  :ensure t
+    ;  :config
+    ;  (global-hungry-delete-mode))
+   #+END_SRC
+
+** helm-tramp
+   https://github.com/masasam/emacs-helm-tramp
+   global-aggressive-indent-mode && editorconfig-mode needs to be disabled
+
+   #+BEGIN_SRC  emacs-lisp
+     ;(use-package helm-tramp
+     ;  :ensure t
+     ;  :init
+     ;  (setq tramp-default-method "scp")
+     ;  (setq helm-tramp-localhost-directory "/root")
+     ;  (add-hook 'helm-tramp-pre-command-hook '(lambda () 
+     ;                                            (projectile-mode 0)))
+     ;  (add-hook 'helm-tramp-quit-hook '(lambda ()
+     ;                                     (projectile-mode 1)))
+     ;  )
+   #+END_SRC
+
+** with-editor
+   #+BEGIN_SRC  emacs-lisp
+    ; (use-package with-editor
+    ;   :ensure t)
+   #+END_SRC
+
+** powerline: disabled due to perf issue
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package powerline
+     ;;  :ensure t)
+     ;;  ;;:config (powerline-default-theme))
+   #+END_SRC
+** spaceline: disabled due to perf issue
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package spaceline
+     ;;  :ensure t
+     ;;  :config 
+     ;;  (spaceline-emacs-theme)
+     ;;  (spaceline-toggle-projectile-root-off)
+     ;;  )
+   #+END_SRC
+
+** modern-cpp-font-lock
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package modern-cpp-font-lock
+     ;;  :ensure t
+     ;;  :init
+     ;;  (modern-c++-font-lock-global-mode))
+   #+END_SRC
+
+** dired-recent
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package dired-recent
+     ;;  :ensure t
+     ;;  :config (dired-recent-mode)
+     ;;  )
+   #+END_SRC
+
+** dired-subtree
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package dired-subtree
+     ;;  :ensure t
+     ;;  :bind (:map dired-mode-map
+     ;;              ("q" . kill-this-buffer)
+     ;;              ("i" . dired-subtree-toggle)
+     ;;              ("C-M-u" . dired-subtree-up)
+     ;;              ("C-M-d" . dired-subtree-down)
+     ;;              ))
+   #+END_SRC
+
+** switch-window
+   #+BEGIN_SRC emacs-lisp
+     ;;(use-package switch-window
+     ;;  :ensure t
+     ;;  :config
+     ;;  (setq switch-window-input-style 'minibuffer)
+     ;;  (setq switch-window-increase 4)
+     ;;  (setq switch-window-threshold 2)
+     ;;  (setq switch-window-shortcut-style 'qwerty)
+     ;;  (setq switch-window-qwerty-shortcuts
+     ;;        '("a" "s" "d" "f" "h" "j" "k" "l"))
+     ;;  :bind
+     ;;  ([remap other-window] . switch-window))
+   #+END_SRC
+
+** helm-gtags
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package helm-gtags
+     ;;  :ensure t
+     ;;  :init
+     ;;  (setq
+     ;;   helm-gtags-ignore-case t
+     ;;   helm-gtags-auto-update t
+     ;;   helm-gtags-use-input-at-cursor t
+     ;;   helm-gtags-pulse-at-cursor t
+     ;;   helm-gtags-suggested-key-mapping t))
+   #+END_SRC
