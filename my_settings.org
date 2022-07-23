@@ -94,6 +94,17 @@
            (point-at-bol)
            (point-at-eol)))))
 
+     (defun term-mode-toggle ()
+       "Toggles term between line mode and char mode"
+       (interactive)
+       (if (term-in-line-mode)
+           (term-char-mode)
+         (term-line-mode)))
+
+     (defun switch-to-scratch ()
+       "Switch to scratch buffer"
+       (interactive)
+       (switch-to-buffer "*scratch*"))
   #+END_SRC
 
 ** programming functions
@@ -128,52 +139,33 @@
        (define-key c-mode-map (kbd "C-t") 'ff-find-related-file)
        )
 
+     (defun non-google3-cpp-coding-style/setup ()
+       (let ((filename (buffer-file-name)))
+         ;; Enable kernel mode for the appropriate files
+         (when (and filename
+                    (string-match (expand-file-name "~/kernel")
+                                            filename))
+           (define-key c-mode-map (kbd "M-.") 'helm-gtags-dwim)
+           (define-key c-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+           (unbind-key "\C-t" helm-gtags-mode-map)
+           (define-key c-mode-map (kbd "C-t") 'ff-find-related-file)
+           (message "Setting up indentation for non google c++"))))
+
      (defun my-c++-mode-config ()
        "For use in `c++-mode-hook'."
        (define-key c++-mode-map (kbd "M-,") 'xref-pop-marker-stack)
        (define-key c++-mode-map (kbd "M-.") 'xref-find-definitions)
        (unbind-key "\C-t" helm-gtags-mode-map)
        (define-key c++-mode-map (kbd "C-t") 'ff-find-related-file)
-       (setq flycheck-gcc-language-standard "c++11")
-       (setq flycheck-clang-language-standard "c++11")
+       (setq flycheck-gcc-language-standard "c++17")
+       (setq flycheck-clang-language-standard "c++17")
        )
    #+END_SRC
-* Packages
-** tide
-   #+BEGIN_SRC emacs-lisp
-     (use-package tide
-       :ensure t
-       :after (typescript-mode company flycheck)
-       :hook ((typescript-mode . tide-setup)
-              (typescript-mode . tide-hl-identifier-mode)
-              (before-save . tide-format-before-save)))
-   #+END_SRC
-
-** vterm
-   #+BEGIN_SRC emacs-lisp
-     (use-package vterm
-       :ensure t
-       )
-     (use-package vterm-toggle
-       :ensure t
-       )
-   #+END_SRC
-
-** recently
-   #+BEGIN_SRC emacs-lisp
-     (use-package recently
-       :ensure t
-       :config
-       (recently-mode +1)
-       :init
-       (bind-key "C-c o" 'recently-show)
-       )
-   #+END_SRC
-
+* Packages not used
 ** eshell
    cd /USER@PUTTYCONFIG:/some/path
    #+BEGIN_SRC emacs-lisp
-     (load-if-exists "~/.emacs.d/eshell/eshell_settings.el")
+   ;;  (load-if-exists "~/.emacs.d/eshell/eshell_settings.el")
    #+END_SRC
 
 ** rtags
@@ -212,8 +204,160 @@
 
 ** jinja2
    #+BEGIN_SRC emacs-lisp
-     (use-package jinja2-mode
-       :ensure t)
+   ;  (use-package jinja2-mode
+   ;    :ensure t)
+   #+END_SRC
+
+** linum-relative
+   #+BEGIN_SRC emacs-lisp
+   ;  (use-package linum-relative
+   ;    :ensure t
+   ;    :config
+   ;      (setq linum-relative-current-symbol "")
+   ;      (add-hook 'prog-mode-hook 'linum-relative-mode))
+   #+END_SRC
+
+** elpy
+   #+BEGIN_SRC  emacs-lisp
+   ;  (use-package elpy
+   ;    :ensure t
+   ;    :config
+   ;    (elpy-enable)
+   ;    (unbind-key "M-<up>" elpy-mode-map)
+   ;    (unbind-key "M-<down>" elpy-mode-map)
+   ;    (unbind-key "M-<left>" elpy-mode-map)
+   ;    (unbind-key "M-<right>" elpy-mode-map)
+   ;    )
+   #+END_SRC
+
+** hungry-delete
+   #+BEGIN_SRC  emacs-lisp
+    ;(use-package hungry-delete
+    ;  :ensure t
+    ;  :config
+    ;  (global-hungry-delete-mode))
+   #+END_SRC
+
+** helm-tramp
+   https://github.com/masasam/emacs-helm-tramp
+   global-aggressive-indent-mode && editorconfig-mode needs to be disabled
+
+   #+BEGIN_SRC  emacs-lisp
+     ;(use-package helm-tramp
+     ;  :ensure t
+     ;  :init
+     ;  (setq tramp-default-method "scp")
+     ;  (setq helm-tramp-localhost-directory "/root")
+     ;  (add-hook 'helm-tramp-pre-command-hook '(lambda () 
+     ;                                            (projectile-mode 0)))
+     ;  (add-hook 'helm-tramp-quit-hook '(lambda ()
+     ;                                     (projectile-mode 1)))
+     ;  )
+   #+END_SRC
+
+** with-editor
+   #+BEGIN_SRC  emacs-lisp
+    ; (use-package with-editor
+    ;   :ensure t)
+   #+END_SRC
+
+** multi-term
+   this is not for vterm
+   #+BEGIN_SRC  emacs-lisp
+   ;;  (use-package multi-term
+   ;;    :ensure t
+   ;;    :bind (("C-c t c" . multi-term)
+   ;;           ("C-c t r" . rename-buffer)
+   ;;           ("C-c t t" . term-mode-toggle))
+   ;;    :config
+   ;;    (setq multi-term-program "/bin/bash")
+   ;;  )
+   #+END_SRC
+
+** powerline: disabled due to perf issue
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package powerline
+     ;;  :ensure t)
+     ;;  ;;:config (powerline-default-theme))
+   #+END_SRC
+** spaceline: disabled due to perf issue
+   #+BEGIN_SRC  emacs-lisp
+     ;;(use-package spaceline
+     ;;  :ensure t
+     ;;  :config 
+     ;;  (spaceline-emacs-theme)
+     ;;  (spaceline-toggle-projectile-root-off)
+     ;;  )
+   #+END_SRC
+
+** org-bullets
+   #+BEGIN_SRC  emacs-lisp
+     ;(use-package org-bullets
+     ;  :ensure t
+     ;  :config
+     ;  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+   #+END_SRC
+* Packages
+** vterm
+   #+BEGIN_SRC emacs-lisp
+     (use-package vterm
+       :ensure t
+       :pin melpa
+       :bind (:map vterm-mode-map ("C-y" . vterm-yank))
+       :config (setq vterm-max-scrollback 100000)
+       )
+     (use-package vterm-toggle
+       :ensure t
+       :init
+       (bind-key "C-c s x" 'vterm-toggle)
+       )
+     (use-package multi-vterm
+       :ensure t
+       :init
+       (bind-key "C-c s c" 'multi-vterm)
+       (bind-key "C-c s t" 'multi-vterm-dedicated-toggle)
+       (bind-key "C-c s n" 'multi-vterm-next)
+       )
+   #+END_SRC
+
+** tramp
+   #+BEGIN_SRC emacs-lisp
+     (use-package tramp
+       :ensure t
+       :config
+       (setq tramp-default-method "ssh")
+       (setq shell-prompt-pattern ":")
+       )
+   #+END_SRC
+
+** flycheck
+   #+BEGIN_SRC  emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :init
+       (add-hook 'after-init-hook #'global-flycheck-mode)
+       (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17"))))
+   #+END_SRC
+
+** persistent-scratch
+   (persistent-scratch-setup-default)
+   #+BEGIN_SRC  emacs-lisp
+     (use-package persistent-scratch
+       :ensure t
+       :config 
+       (persistent-scratch-setup-default)
+       (persistent-scratch-autosave-mode))
+   #+END_SRC
+
+** recently
+   #+BEGIN_SRC emacs-lisp
+     (use-package recently
+       :ensure t
+       :config
+       (recently-mode +1)
+       :init
+       (bind-key "C-c o" 'recently-show)
+       )
    #+END_SRC
 
 ** deft
@@ -311,8 +455,10 @@
    #+BEGIN_SRC  emacs-lisp
      (setq ibuffer-saved-filter-groups
            '(("home"
-              ("Sys" (or (mode . vterm-mode)
+              ("Sys" (or ;(mode . vterm-mode)
                          (mode . dired-mode)
+                         (mode . term-mode)
+                         ;(name . "\*Term\*")
                          (name . "\*Custom\*")
                          (name . "\*Package\*")
                          ))
@@ -320,14 +466,27 @@
                           (mode . c++-mode)
                           (mode . java-mode)
                           (mode . python-mode)
+                          (mode . rjsx-mode)
                           (mode . shell-script-mode)
+                          (mode . typescript-mode)
+                          (mode . makefile-mode)
+                          (mode . makefile-gmake-mode)
                           (mode . sh-mode)
+                          (mode . bazel-mode)
                           ))
+              ("Org" (or (mode . org-mode)
+                         (mode . deft-mode)
+                         (mode . rst-mode)
+                         ))
+              ("Term" (or (mode . vterm-mode)
+                         ))
               ("Info" (or (name . "\*P4\*")
                           (name . "\*Compilation\*")
                           ))
-              ("Org" (mode . org-mode))
-              ("Magit" (name . "\*magit"))
+              ("Magit" (or (mode . magit-status-mode)
+                           (mode . magit-revision-mode)
+                           (mode . magit-diff-mode)
+                          ))
               ("Help" (or (name . "\*Help\*")
                           (name . "\*Apropos\*")
                           (name . "\*Flycheck\*")
@@ -337,36 +496,6 @@
                          (name . "\*Lisp\*")
                          (name . "\*Tags\*")))
               )))
-   #+END_SRC
-
-** elpy
-   #+BEGIN_SRC  emacs-lisp
-     (use-package elpy
-       :ensure t
-       :config
-       (elpy-enable)
-       (unbind-key "M-<up>" elpy-mode-map)
-       (unbind-key "M-<down>" elpy-mode-map)
-       (unbind-key "M-<left>" elpy-mode-map)
-       (unbind-key "M-<right>" elpy-mode-map)
-       )
-   #+END_SRC
-
-** flycheck
-   #+BEGIN_SRC  emacs-lisp
-     (use-package flycheck
-       :ensure t
-       :init
-       (add-hook 'after-init-hook #'global-flycheck-mode)
-       (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11"))))
-   #+END_SRC
-
-** hungry-delete
-   #+BEGIN_SRC  emacs-lisp
-     (use-package hungry-delete
-       :ensure t
-       :config
-       (global-hungry-delete-mode))
    #+END_SRC
 
 ** company
@@ -608,30 +737,10 @@
        (global-undo-tree-mode)
        :config
        (unbind-key "C-/" undo-tree-map)
-       (setq undo-tree-auto-save-history nil)
+       (setq
+        undo-tree-auto-save-history t
+        undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
        )
-   #+END_SRC
-
-** with-editor
-   #+BEGIN_SRC  emacs-lisp
-     (use-package with-editor
-       :ensure t)
-   #+END_SRC
-
-** powerline: disabled due to perf issue
-   #+BEGIN_SRC  emacs-lisp
-     ;;(use-package powerline
-     ;;  :ensure t)
-     ;;  ;;:config (powerline-default-theme))
-   #+END_SRC
-** spaceline: disabled due to perf issue
-   #+BEGIN_SRC  emacs-lisp
-     ;;(use-package spaceline
-     ;;  :ensure t
-     ;;  :config 
-     ;;  (spaceline-emacs-theme)
-     ;;  (spaceline-toggle-projectile-root-off)
-     ;;  )
    #+END_SRC
 
 ** highlight-parentheses
@@ -663,13 +772,9 @@
               ("M-p" . symbol-overlay-jump-prev)
               ("M-S-n" . symbol-overlay-switch-forward)
               ("M-S-p" . symbol-overlay-switch-backward)
-              ("C-g" . (lambda ()
-                         (interactive)
-                         (symbol-overlay-remove-all)
-                         (keyboard-quit)))
+              ("C-c c w" . symbol-overlay-save-symbol)
               ("M-s" . (lambda ()
                          (interactive)
-                         (symbol-overlay-save-symbol)
                          (symbol-overlay-put)))
               ))
    #+END_SRC
@@ -681,6 +786,7 @@
        :config
        (load-theme 'ample t)
        (set-face-attribute 'region nil :background "#555")
+       (set-face-attribute 'default nil :height 120)
        )
    #+END_SRC
 
@@ -689,6 +795,18 @@
      (use-package which-key
        :ensure t
        :config (which-key-mode))
+   #+END_SRC
+
+** ws-butler
+   #+BEGIN_SRC  emacs-lisp
+     (use-package ws-butler
+       :ensure t)
+   #+END_SRC
+
+** multiple-cursors
+   #+BEGIN_SRC  emacs-lisp
+     (use-package multiple-cursors
+       :ensure t)
    #+END_SRC
 
 ** org-bullets
@@ -752,6 +870,80 @@
                    ("C-M-u" . dired-subtree-up)
                    ("C-M-d" . dired-subtree-down)
                    ))
+   #+END_SRC
+
+* Packages for typescript
+   #+BEGIN_SRC  emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :config
+       (add-hook 'typescript-mode-hook 'flycheck-mode))
+
+     (defun setup-tide-mode ()
+       (interactive)
+       (tide-setup)
+       (flycheck-mode +1)
+       (setq flycheck-check-syntax-automatically '(save mode-enabled))
+       (eldoc-mode +1)
+       (tide-hl-identifier-mode +1)
+       (company-mode +1))
+
+     (use-package company
+       :ensure t
+       :config
+       (setq company-show-numbers t)
+       (setq company-tooltip-align-annotations t)
+       (setq company-tooltip-flip-when-above t)
+       (global-company-mode))
+
+     (use-package company-quickhelp
+       :ensure t
+       :init
+       (company-quickhelp-mode 1)
+       (use-package pos-tip
+         :ensure t))
+
+     (use-package web-mode
+       :ensure t
+       :mode (("\\.html?\\'" . web-mode)
+              ("\\.tsx\\'" . web-mode)
+              ("\\.jsx\\'" . web-mode))
+       :config
+       (setq web-mode-markup-indent-offset 2
+             web-mode-css-indent-offset 2
+             web-mode-code-indent-offset 2
+             web-mode-block-padding 2
+             web-mode-comment-style 2
+
+             web-mode-enable-css-colorization t
+             web-mode-enable-auto-pairing t
+             web-mode-enable-comment-keywords t
+             web-mode-enable-current-element-highlight t
+             )
+       (add-hook 'web-mode-hook
+                 (lambda ()
+                   (when (string-equal "tsx" (file-name-extension buffer-file-name))
+     		(setup-tide-mode))))
+       (flycheck-add-mode 'typescript-tslint 'web-mode))
+
+     (use-package rjsx-mode
+       :ensure t)
+       (add-to-list 'auto-mode-alist '("\\.js.*$" . rjsx-mode))
+       (add-hook 'rjsx-mode-hook 'tide-setup-hook)
+
+     (use-package typescript-mode
+       :ensure t
+       :config
+       (setq typescript-indent-level 2)
+       (add-hook 'typescript-mode #'subword-mode))
+
+     (use-package tide
+       :init
+       :ensure t
+       :after (typescript-mode company flycheck)
+       :hook ((typescript-mode . tide-setup)
+              (typescript-mode . tide-hl-identifier-mode)
+              (before-save . tide-format-before-save)))
    #+END_SRC
 
 ** persistent-scratch
@@ -968,7 +1160,7 @@
      (add-hook 'shell-mode-hook 'with-editor-export-editor)
      (add-hook 'shell-mode-hook 'with-editor-export-git-editor)
      (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-     (add-hook 'term-exec-hook  'with-editor-export-editor)
+     ;(add-hook 'term-exec-hook  'with-editor-export-editor)
 
      (add-hook 'ibuffer-mode-hook
                '(lambda ()
@@ -983,23 +1175,23 @@
                (lambda()
                  (setq-default fill-column 90)))
 
-     (add-hook 'term-mode-hook
-               (lambda ()
-                 (define-key term-raw-map (kbd "M-x") 'helm-M-x)
-                 (define-key term-raw-map (kbd "C-y") 'term-paste)
-                 (define-key term-raw-map (kbd "C-c q") 'comint-clear-buffer)
-                 (define-key term-raw-map (kbd "C-c C-e") 'term-send-esc)
-                 (define-key term-mode-map (kbd "M-x") 'helm-M-x)
-                 (define-key term-mode-map (kbd "C-y") 'term-paste)
-                 (define-key term-mode-map (kbd "C-c q") 'comint-clear-buffer)
-                 (define-key term-mode-map (kbd "C-c C-e") 'term-send-esc)
-                 ))
+     ;(add-hook 'term-mode-hook
+     ;          (lambda ()
+     ;            (define-key term-raw-map (kbd "M-x") 'helm-M-x)
+     ;            (define-key term-raw-map (kbd "C-y") 'term-paste)
+     ;            (define-key term-raw-map (kbd "C-c q") 'comint-clear-buffer)
+     ;            (define-key term-raw-map (kbd "C-c C-e") 'term-send-esc)
+     ;            (define-key term-mode-map (kbd "M-x") 'helm-M-x)
+     ;            (define-key term-mode-map (kbd "C-y") 'term-paste)
+     ;            (define-key term-mode-map (kbd "C-c q") 'comint-clear-buffer)
+     ;            (define-key term-mode-map (kbd "C-c C-e") 'term-send-esc)
+     ;            ))
    #+END_SRC
 
 ** programming hooks
    #+BEGIN_SRC emacs-lisp
      (add-hook 'prog-mode-hook 'highlight-parentheses-mode)
-     (add-hook 'prog-mode-hook 'ws-butler-mode)
+     ;(add-hook 'prog-mode-hook 'ws-butler-mode)
      (add-hook 'prog-mode-hook 'hs-minor-mode)
      (add-hook 'prog-mode-hook 'whitespace-mode)
 
@@ -1015,7 +1207,10 @@
 
      (add-hook 'c-mode-hook 'linux-kernel-coding-style/setup)
 
-     (add-hook 'c++-mode-hook 'my-c++-mode-config)
+     (add-hook 'c++-mode-hook 'non-google3-cpp-coding-style/setup)
+     (add-hook 'c++-mode-hook 'helm-gtags-mode)
+
+     ;;(add-hook 'c++-mode-hook 'my-c++-mode-config)
 
      (add-hook 'sh-mode-hook (lambda () (setq smie-indent-basic 4 indent-tabs-mode t tab-width 4 sh-basic-offset 4)))
 
@@ -1030,6 +1225,17 @@
      ;;(add-hook 'go-mode-hook
      ;;          (lambda()
      ;;            (setq whitespace-line-column 250)))
+   #+END_SRC
+
+** background hooks
+   #+BEGIN_SRC emacs-lisp
+    (defun set-background-for-terminal (&optional frame)
+      (or frame (setq frame (selected-frame)))
+      "unsets the background color in terminal mode"
+      (unless (display-graphic-p frame)
+        (set-face-background 'default "unspecified-bg" frame)))
+    (add-hook 'after-make-frame-functions 'set-background-for-terminal)
+    (add-hook 'window-setup-hook 'set-background-for-terminal)
    #+END_SRC
 
 * Keys: Global
@@ -1048,11 +1254,13 @@
   (bind-key "<M-S-up>" 'enlarge-window)
   (bind-key "C-x C-b" 'ibuffer)
   (bind-key "C-x v" 'view-file)
+  (bind-key "C-c e" 'switch-to-scratch)
   (bind-key "C-c m" 'multiple-cursors-hydra/body)
-  (bind-key "C-c w w" 'kill-whole-word)
+  (bind-key "C-c k w" 'kill-whole-word)
+  (bind-key "C-c k l" 'kill-whole-line)
   (bind-key "C-x 3" 'split-and-follow-vertically)
   (bind-key "C-x 2" 'split-and-follow-horizontally)
-  (bind-key "C-c w l" 'copy-whole-line)
+  (bind-key "C-c c l" 'copy-whole-line)
   (bind-key "C-x k" 'kill-curr-buffer)
 
   ;;keep cursor at same position when scrolling
@@ -1069,7 +1277,7 @@
   (unbind-key "M-<down>" org-mode-map)
   (unbind-key "M-<left>" org-mode-map)
   (unbind-key "M-<right>" org-mode-map)
-  (unbind-key "C-v" term-raw-map)
+  ;(unbind-key "C-v" term-raw-map)
   #+END_SRC
 
 * Keys: Hydra
@@ -1096,7 +1304,7 @@
     (defhydra system (global-map "C-c s" :hint nil)
       "system "
       ("b" compile :exit t)
-      ("t" vterm :exit t)
+      ;("t" vterm :exit t)
       ("q" nil))
   #+END_SRC
 
@@ -1161,7 +1369,7 @@
     (diminish 'modern-c++-font-lock-mode)
     (diminish 'whitespace-mode)
     (diminish 'highlight-parentheses-mode)
-    (diminish 'ws-butler-mode)
+    ;(diminish 'ws-butler-mode)
     (diminish 'linum-relative-mode)
     (diminish 'abbrev-mode)
     (diminish 'volatile-highlights-mode)
@@ -1206,9 +1414,6 @@
      '(elscreen-display-tab nil)
      '(elscreen-tab-display-control nil)
      '(fill-column 80)
-     '(flycheck-clang-language-standard nil)
-     '(flycheck-executable-find (quote flycheck-default-executable-find))
-     '(flycheck-keymap-prefix "f")
      '(frame-title-format "emacs - %b" t)
      '(global-company-mode t)
      '(global-flycheck-mode t)
@@ -1223,9 +1428,6 @@
      '(menu-bar-mode nil)
      '(next-line-add-newlines nil)
      '(package-enable-at-startup nil)
-     '(package-selected-packages
-       (quote
-        (linum-relative deft volatile-highlights helm-company helm-config diminish dashboard switch-window elpy flycheck helm-tramp hungry-delete undo-tree helm-ag company-quickhelp company helm-swoop avy buffer-move ibuffer-projectile helm-bm  multi-term helm-projectile modern-cpp-font-lock dired-subtree helm-elscreen elscreen magit persistent-scratch projectile multiple-cursors helm-gtags helm with-editor ws-butler highlight-parentheses expand-region origami symbol-overlay dired-recent ample-theme hydra bm zoom-window org-bullets which-key bind-key use-package)))
      '(projectile-completion-system (quote helm))
      '(projectile-mode t nil (projectile))
      '(projectile-switch-project-action (quote helm-projectile-switch-to-buffer))
@@ -1256,7 +1458,7 @@
 * Additional setting files
   maybe company specific settings in a file?
   #+BEGIN_SRC emacs-lisp
-    (load-if-exists "~/.emacs.d/company.el")
+    ;; (load-if-exists "~/.emacs.d/company.el")
   #+END_SRC
 * Custom file type binding to mode
   this should be put at the end. some packages overrides auto-mode-alist
