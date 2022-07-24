@@ -702,6 +702,14 @@
        )
    #+END_SRC
 
+* Markdown
+   #+BEGIN_SRC  emacs-lisp
+     (use-package markdown-mode
+       :ensure t
+       :mode ("README\\.md\\'" . gfm-mode)
+       :init (setq markdown-command "multimarkdown"))
+   #+END_SRC
+
 * Hydra defs
 ** Hydra ibuffer
    #+BEGIN_SRC emacs-lisp
