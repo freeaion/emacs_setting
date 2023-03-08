@@ -141,6 +141,8 @@
     #+BEGIN_SRC  emacs-lisp
       (use-package company
         :ensure t
+        :custom
+        (company-idle-delay 0.5) ;; how long to wait until popup
         :config
         (setq company-minimum-prefix-length 3)
         (global-company-mode t))
@@ -153,6 +155,17 @@
           :ensure t
           :config
           (company-quickhelp-mode))
+    #+END_SRC
+
+*** yasnippet
+    yasnippet for code completion
+    #+BEGIN_SRC  emacs-lisp
+      (use-package yasnippet
+        :ensure
+        :config
+        (yas-reload-all)
+        (add-hook 'prog-mode-hook 'yas-minor-mode)
+        (add-hook 'text-mode-hook 'yas-minor-mode))
     #+END_SRC
 
 *** expand-region
