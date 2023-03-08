@@ -141,10 +141,10 @@
     #+BEGIN_SRC  emacs-lisp
       (use-package company
         :ensure t
-        ;:custom
-        ;(company-idle-delay 0.5) ;; how long to wait until popup
+        :custom
+        (company-idle-delay 0.5) ;; how long to wait until popup
         :config
-        (setq company-minimum-prefix-length 3)
+        (setq company-minimum-prefix-length 2)
         (global-company-mode t))
     #+END_SRC
 
@@ -756,7 +756,8 @@
        :commands lsp-ui-mode
        :custom
        (lsp-ui-peek-always-show t)
-       (lsp-ui-sideline-show-hover t)
+       ; sideline show is disabled due to weird font size that mangles rust src view
+       (lsp-ui-sideline-show-hover nil)
        (lsp-ui-doc-enable nil))
    #+END_SRC
 
