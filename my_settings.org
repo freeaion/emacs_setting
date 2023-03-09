@@ -318,6 +318,7 @@
                            (mode . java-mode)
                            (mode . python-mode)
                            (mode . rjsx-mode)
+                           (mode . rustic-mode)
                            (mode . shell-script-mode)
                            (mode . typescript-mode)
                            (mode . makefile-mode)
