@@ -996,15 +996,15 @@
    #+BEGIN_SRC emacs-lisp
      (add-hook 'prog-mode-hook 'hs-minor-mode)
      (add-hook 'prog-mode-hook 'whitespace-mode)
-     (add-hook 'c-mode-hook 'my-c-mode-config)
-     (add-hook 'c-mode-hook
-               (lambda ()
-                 (c-add-style "linux-kernel"
-                              '("linux" (c-offsets-alist
-                                         (arglist-cont-nonempty
-                                          c-lineup-gcc-asm-reg
-                                          linux-kernel-coding-style/c-lineup-arglist-tabs-only))))))
-     (add-hook 'c-mode-hook 'linux-kernel-coding-style/setup)
+     ;;(add-hook 'c-mode-hook 'my-c-mode-config)
+     ;;(add-hook 'c-mode-hook
+     ;;          (lambda ()
+     ;;            (c-add-style "linux-kernel"
+     ;;                         '("linux" (c-offsets-alist
+     ;;                                    (arglist-cont-nonempty
+     ;;                                     c-lineup-gcc-asm-reg
+     ;;                                     linux-kernel-coding-style/c-lineup-arglist-tabs-only))))))
+     ;;(add-hook 'c-mode-hook 'linux-kernel-coding-style/setup)
      ;;(add-hook 'c++-mode-hook 'helm-gtags-mode)
      ;;(add-hook 'c++-mode-hook 'my-c++-mode-config)
 
