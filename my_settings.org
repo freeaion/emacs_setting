@@ -1041,6 +1041,7 @@
   (bind-key "C-x C-b" 'ibuffer)
   (bind-key "C-x v" 'view-file)
   (bind-key "C-c e" 'switch-to-scratch)
+  (bind-key "C-c C-e" 'eldoc-doc-buffer)
   (bind-key "C-c m" 'multiple-cursors-hydra/body)
   (bind-key "C-x 3" 'split-and-follow-vertically)
   (bind-key "C-x 2" 'split-and-follow-horizontally)
