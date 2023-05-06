@@ -133,7 +133,7 @@
        :custom
        (company-idle-delay 0.5) ;; how long to wait until popup
        :config
-       (setq company-minimum-prefix-length 0)
+       (setq company-minimum-prefix-length 1)
        (global-company-mode t))
    #+END_SRC
 
@@ -324,6 +324,8 @@
                           (mode . rustic-mode)
                           (mode . shell-script-mode)
                           (mode . typescript-mode)
+                          (mode . js2-mode)
+                          (mode . javascript-mode)
                           (mode . makefile-mode)
                           (mode . makefile-gmake-mode)
                           (mode . sh-mode)
