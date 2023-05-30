@@ -173,8 +173,6 @@
        :ensure t
        :init
        (setq global-highlight-parentheses-mode t)
-       :config
-       (add-hook 'prog-mode-hook 'ws-butler-mode)
        )
    #+END_SRC
 
@@ -291,7 +289,6 @@
        (diminish 'volatile-highlights-mode)
        (diminish 'which-key-mode)
        (diminish 'whitespace-mode)
-       (diminish 'ws-butler-mode)
        )
    #+END_SRC
 
