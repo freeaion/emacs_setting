@@ -217,7 +217,10 @@
 ** ws-butler
    #+BEGIN_SRC  emacs-lisp
      (use-package ws-butler
-       :ensure t)
+       :ensure t
+       :init
+       (add-hook 'prog-mode-hook #'ws-butler-mode)
+     )
    #+END_SRC
 
 ** tree sitter
