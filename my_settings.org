@@ -905,7 +905,6 @@
   ;;(unbind-key "C-t" dired-mode-map)
   #+BEGIN_SRC emacs-lisp
   (bind-key "C-c p" 'hydra-projectile/body)
-  (bind-key "RET" 'newline-and-indent)
   (bind-key "M-g" 'goto-line)
   (bind-key "<M-left>" 'windmove-left)
   (bind-key "<M-right>" 'windmove-right)
