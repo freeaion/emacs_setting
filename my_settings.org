@@ -244,8 +244,6 @@
        :ensure t
        :config
        (load-theme 'ample t)
-       ;;(set-face-attribute 'region nil :background "#555")
-       ;;(set-face-attribute 'default nil :height 120)
        )
    #+END_SRC
 
