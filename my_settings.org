@@ -190,18 +190,12 @@
    #+END_SRC
 
 ** symbol-overlay
-   (unbind-key "\C-g" global-map)
    #+BEGIN_SRC  emacs-lisp
      (use-package symbol-overlay
        :ensure t
        :bind (("M-n" . symbol-overlay-jump-next)
               ("M-p" . symbol-overlay-jump-prev)
-              ;;("M-S-n" . symbol-overlay-switch-forward)
-              ;;("M-S-p" . symbol-overlay-switch-backward)
-              ;;("C-c c w" . symbol-overlay-save-symbol)
-              ("M-s" . (lambda ()
-                         (interactive)
-                         (symbol-overlay-put)))
+              ("M-s" . symbol-overlay-put)
               ))
    #+END_SRC
 
