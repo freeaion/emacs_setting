@@ -163,7 +163,6 @@
        :ensure t
        :init
        (bind-key "C-=" 'er/expand-region)
-       (bind-key "C-+" 'er/contract-region)
        )
    #+END_SRC
 
