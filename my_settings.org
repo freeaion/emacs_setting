@@ -472,17 +472,6 @@
        )
    #+END_SRC
 
-** recently
-   #+BEGIN_SRC emacs-lisp
-     (use-package recently
-       :ensure t
-       :config
-       (recently-mode +1)
-       :init
-       (bind-key "C-c o" 'recently-show)
-       )
-   #+END_SRC
-
 ** misc packages
 
 *** bookmark manager
