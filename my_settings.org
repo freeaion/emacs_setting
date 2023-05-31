@@ -804,27 +804,30 @@
 
 ** Hydra expand region
   #+BEGIN_SRC emacs-lisp
-    (defhydra expand-copy (global-map "C-c r")
+    (defhydra expand-copy-hydra (:hint nil)
       "Region"
       ("j" er/expand-region "expend")
       ("k" er/contract-region "contract")
-      ("q" nil "quit")
       ("c" copy-region-as-kill "copy" :exit t)
-      ("r" copy-to-register "copy to reg" :exit t))
+      ("r" copy-to-register "copy to reg" :exit t)
+      ("q" nil "quit")
+    )
+    (bind-key "C-c r" 'expand-copy-hydra/body)
   #+END_SRC
 
 ** Hydra helm-ag
   #+BEGIN_SRC emacs-lisp
-    (defhydra ag (global-map "C-c a" :hint nil)
-      "Helm ag "
-      ("a" helm-do-ag :exit t)
-      ("b" helm-do-ag-buffers :exit t)
-      ("r" helm-projectile-ag :exit t)
-      ("f" helm-do-ag-this-file :exit t)
-      ("c" helm-ag-clear-stack :exit t)
-      ("p" helm-ag-pop-stack :exit t)
-      ("P" helm-do-ag-project-root :exit t)
+    (defhydra ag-hydra (:hint nil)
+      "Helm ag"
+      ("a" helm-do-ag "do" :exit t)
+      ("b" helm-do-ag-buffers "buf" :exit t)
+      ("r" helm-projectile-ag "proj" :exit t)
+      ("f" helm-do-ag-this-file "file" :exit t)
+      ("c" helm-ag-clear-stack "clear" :exit t)
+      ("p" helm-ag-pop-stack "pop" :exit t)
+      ("P" helm-do-ag-project-root "proj-root" :exit t)
       ("q" nil))
+    (bind-key "C-c a" 'ag-hydra/body)
   #+END_SRC
 
 ** Hydra system commands
