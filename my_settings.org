@@ -822,13 +822,15 @@
   #+BEGIN_SRC emacs-lisp
     (defhydra ag-hydra (:hint nil)
       "Helm ag"
-      ("a" helm-do-ag "do" :exit t)
-      ("b" helm-do-ag-buffers "buf" :exit t)
-      ("r" helm-projectile-ag "proj" :exit t)
+      ("a" helm-ag "ag" :exit t)
+      ("A" helm-ag-project-root "ag-root" :exit t)
+      ("b" helm-do-ag-buffers "bufs" :exit t)
+      ("d" helm-do-ag "do-ag" :exit t)
       ("f" helm-do-ag-this-file "file" :exit t)
+
       ("c" helm-ag-clear-stack "clear" :exit t)
       ("p" helm-ag-pop-stack "pop" :exit t)
-      ("P" helm-do-ag-project-root "proj-root" :exit t)
+
       ("q" nil))
     (bind-key "C-c a" 'ag-hydra/body)
   #+END_SRC
