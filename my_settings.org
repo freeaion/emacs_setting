@@ -108,12 +108,6 @@
        )
      (use-package multi-vterm
        :ensure t
-       :init
-       (bind-key "C-c t c" 'multi-vterm)
-       (bind-key "C-c t t" 'multi-vterm-dedicated-toggle)
-       (bind-key "C-c t n" 'multi-vterm-next)
-       ;; there should be a way to escape and go back to other screen w/ elscreen
-       (bind-key "C-c t z" 'elscreen-select-and-goto)
        )
    #+END_SRC
 
@@ -726,6 +720,18 @@
    #+END_SRC
 
 * Hydra defs
+** Hydra multi vterm
+   #+BEGIN_SRC emacs-lisp
+     (defhydra multi-vterm-hydra (:hint nil)
+       "Vterm"
+       ("c" multi-vterm "create" :exit t)
+       ("n" multi-vterm-next "next" :exit t)
+       ("t" multi-vterm-dedicated-toggle "toggle" :exit t)
+       ("z" elscreen-select-and-goto "elscreen" :exit t)
+       ("q" nil "quit"))
+     (bind-key "C-c t" 'multi-vterm-hydra/body)
+   #+END_SRC
+   
 ** Hydra multi cursors
    #+BEGIN_SRC emacs-lisp
      (defhydra multiple-cursors-hydra (:hint nil)
