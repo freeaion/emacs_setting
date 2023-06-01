@@ -323,6 +323,7 @@
        :bind (("C-c h" . helm-command-prefix)
               ("C-x f" . helm-find-files)
               ("M-x" . helm-M-x)
+              ("C-x r i" . helm-register)
               ("M-y" . helm-show-kill-ring)
               :map helm-map
               ("<tab>" . helm-execute-persistent-action )
