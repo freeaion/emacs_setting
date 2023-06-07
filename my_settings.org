@@ -322,6 +322,8 @@
        :ensure t
        :bind (("C-c h" . helm-command-prefix)
               ("C-x f" . helm-find-files)
+              ("C-c b" . helm-bookmarks)
+              ("C-b" . helm-mark-ring)
               ("M-x" . helm-M-x)
               ("C-x r i" . helm-register)
               ("M-y" . helm-show-kill-ring)
@@ -350,13 +352,6 @@
      (use-package helm-ag
        :ensure t
        )
-   #+END_SRC
-
-** helm-bm
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-bm
-       :ensure t
-       :bind (("C-c b" . helm-bm)))
    #+END_SRC
 
 ** helm-company
@@ -468,42 +463,6 @@
    #+END_SRC
 
 ** misc packages
-
-*** bookmark manager
-    #+BEGIN_SRC  emacs-lisp
-      (use-package bm
-        :ensure t
-        :init
-        ;; restore on load (even before you require bm)
-        (setq bm-restore-repository-on-load t)
-
-        :config
-        ;; where to store persistant files
-        (setq bm-repository-file "~/.emacs.d/bm-repository")
-        ;; save bookmarks
-        (setq-default bm-buffer-persistence t)
-        ;; Saving bookmarks
-        (add-hook 'kill-buffer-hook #'bm-buffer-save)
-        ;; Saving the repository to file when on exit.
-        ;; kill-buffer-hook is not called when Emacs is killed, so we
-        ;; must save all bookmarks first.
-        (add-hook 'kill-emacs-hook #'(lambda nil
-                                          (bm-buffer-save-all)
-                                          (bm-repository-save)))
-        ;; The `after-save-hook' is not necessary to use to achieve persistence,
-        ;; but it makes the bookmark data in repository more in sync with the file
-        ;; state.
-        (add-hook 'after-save-hook #'bm-buffer-save)
-
-        ;; Restoring bookmarks
-        (add-hook 'find-file-hooks   #'bm-buffer-restore)
-        (add-hook 'after-revert-hook #'bm-buffer-restore)
-
-        :bind (("C-b" . bm-toggle)
-               ("<C-down>" . bm-next)
-               ("<C-up>" . bm-previous))
-        )
-    #+END_SRC
 
 *** flycheck
     #+BEGIN_SRC  emacs-lisp
