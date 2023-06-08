@@ -371,7 +371,7 @@
    #+BEGIN_SRC  emacs-lisp
      (use-package helm-projectile
        :ensure t
-       :bind (("C-x C-b" . helm-projectile-switch-to-buffer))
+       :bind (("C-x b" . helm-projectile-switch-to-buffer))
        :config
        (helm-projectile-on))
    #+END_SRC
@@ -888,7 +888,7 @@
   (bind-key "<M-S-right>" 'enlarge-window-horizontally)
   (bind-key "<M-S-down>" 'shrink-window)
   (bind-key "<M-S-up>" 'enlarge-window)
-  (bind-key "C-x b" 'helm-mini)
+  (bind-key "C-x C-b" 'helm-mini)
   (bind-key "C-x v" 'view-file)
   (bind-key "C-c e" 'switch-to-scratch)
   (bind-key "C-c C-e" 'eldoc-doc-buffer)
