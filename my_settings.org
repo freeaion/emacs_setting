@@ -600,6 +600,10 @@
 
    #+END_SRC
 
+* Perl: use cperl
+   #+BEGIN_SRC  emacs-lisp
+     (defalias 'perl-mode 'cperl-mode)
+   #+END_SRC
 * Docker
    #+BEGIN_SRC  emacs-lisp
      (use-package dockerfile-mode
