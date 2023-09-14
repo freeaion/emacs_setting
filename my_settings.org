@@ -266,7 +266,6 @@
        (diminish 'hl-line-mode)
        (diminish 'hs-minor-mode)
        (diminish 'hungry-delete-mode)
-       (diminish 'linum-relative-mode)
        (diminish 'modern-c++-font-lock-mode)
        (diminish 'p4-mode)
        (diminish 'page-break-lines-mode)
@@ -286,15 +285,6 @@
        :ensure t
        :init
        (elscreen-start))
-   #+END_SRC
-
-** linum-relative
-   #+BEGIN_SRC emacs-lisp
-     (use-package linum-relative
-       :ensure t
-       :config
-         (setq linum-relative-current-symbol "")
-         (add-hook 'prog-mode-hook 'linum-relative-mode))
    #+END_SRC
 
 ** volatile-highlights
@@ -1121,6 +1111,16 @@
 
 
 * Packages not used
+** linum-relative
+   #+BEGIN_SRC emacs-lisp
+     ;;(use-package linum-relative
+     ;;  :ensure t
+     ;;  :config
+     ;;    (setq linum-relative-current-symbol "")
+     ;;    (add-hook 'prog-mode-hook 'linum-relative-mode))
+   #+END_SRC
+
+
 ** eshell
    cd /USER@PUTTYCONFIG:/some/path
    #+BEGIN_SRC emacs-lisp
