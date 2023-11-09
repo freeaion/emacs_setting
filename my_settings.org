@@ -194,13 +194,6 @@
               ))
    #+END_SRC
 
-** tree-sitter-langs ;; this will install tree-sitter parsers, libtree-sitter-*.so
-   #+BEGIN_SRC  emacs-lisp
-     (use-package tree-sitter-langs
-       :ensure t
-     )
-   #+END_SRC
-
 ** undo-tree
    C-x u : visualize undo/redo tree
    #+BEGIN_SRC  emacs-lisp
