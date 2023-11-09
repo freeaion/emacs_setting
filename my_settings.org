@@ -108,6 +108,7 @@
        )
      (use-package multi-vterm
        :ensure t
+       :after vterm
        )
    #+END_SRC
 
@@ -193,6 +194,13 @@
               ))
    #+END_SRC
 
+** tree-sitter-langs ;; this will install tree-sitter parsers, libtree-sitter-*.so
+   #+BEGIN_SRC  emacs-lisp
+     (use-package tree-sitter-langs
+       :ensure t
+     )
+   #+END_SRC
+
 ** undo-tree
    C-x u : visualize undo/redo tree
    #+BEGIN_SRC  emacs-lisp
@@ -217,19 +225,6 @@
      )
    #+END_SRC
 
-** tree sitter
-   #+BEGIN_SRC  emacs-lisp
-     (use-package tree-sitter
-       :ensure t
-       :init
-       (global-tree-sitter-mode)
-       (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-       )
-     (use-package tree-sitter-langs
-       :ensure t
-       :after tree-sitter
-     )
-   #+END_SRC
 
 * package for windows/buffers
 ** ample-theme
@@ -452,9 +447,8 @@
        )
    #+END_SRC
 
-** misc packages
-
-*** flycheck
+* misc packages
+** flycheck
     #+BEGIN_SRC  emacs-lisp
       (use-package flycheck
         :ensure t
@@ -492,7 +486,7 @@
       (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
     #+END_SRC
 
-*** hydra
+** hydra
     #+BEGIN_SRC  emacs-lisp
       (use-package hydra
         :ensure t
@@ -501,14 +495,14 @@
         )
     #+END_SRC
 
-*** magit
+** magit
     #+BEGIN_SRC  emacs-lisp
       (use-package magit
         :ensure t
         :bind (("C-x g" . magit-status)))
     #+END_SRC
 
-*** org-bullets
+** org-bullets
     #+BEGIN_SRC  emacs-lisp
       (use-package org-bullets
         :ensure t
@@ -516,7 +510,7 @@
         (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
     #+END_SRC
 
-*** projectile
+** projectile
     #+BEGIN_SRC  emacs-lisp
       (use-package projectile
         :ensure t
@@ -525,7 +519,7 @@
         )
     #+END_SRC
 
-*** which-key
+** which-key
     #+BEGIN_SRC  emacs-lisp
       (use-package which-key
         :ensure t
@@ -594,6 +588,7 @@
    #+BEGIN_SRC  emacs-lisp
      (defalias 'perl-mode 'cperl-mode)
    #+END_SRC
+
 * Docker
    #+BEGIN_SRC  emacs-lisp
      (use-package dockerfile-mode
@@ -616,6 +611,7 @@
    #+BEGIN_SRC  emacs-lisp
      (use-package rustic
        :ensure t
+       :init (setq rustic-lsp-client 'eglot)
        )
    #+END_SRC
 
@@ -623,50 +619,7 @@
    #+BEGIN_SRC  emacs-lisp
      (use-package kotlin-mode
        :ensure t
-       :hook
-       (kotlin-mode . lsp)
        )
-   #+END_SRC
-
-* LSP
-   #+BEGIN_SRC  emacs-lisp
-     (use-package lsp-mode
-       :ensure t
-       :init
-       ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-       (setq lsp-keymap-prefix "C-c l")
-       :commands lsp
-       :custom
-       ;; what to use when checking on-save. "check" is default, I prefer clippy
-       (lsp-rust-analyzer-cargo-watch-command "clippy")
-       (lsp-eldoc-render-all t)
-       (lsp-idle-delay 0.6)
-       ;; enable / disable the hints as you prefer:
-       (lsp-rust-analyzer-server-display-inlay-hints t)
-       (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-       (lsp-rust-analyzer-display-chaining-hints t)
-       (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
-       (lsp-rust-analyzer-display-closure-return-type-hints t)
-       (lsp-rust-analyzer-display-parameter-hints nil)
-       (lsp-rust-analyzer-display-reborrow-hints nil)
-       :config
-       (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-       (add-hook 'typescript-mode-hook 'lsp-deferred)
-       (add-hook 'javascript-mode-hook 'lsp-deferred)
-       (add-hook 'js2-mode-hook 'lsp-deferred)
-       (add-hook 'c-mode-hook 'lsp-deferred)
-       (add-hook 'c++-mode-hook 'lsp-deferred)
-       :hook
-        ((python-mode . lsp))
-       )
-     (use-package lsp-ui
-       :ensure
-       :commands lsp-ui-mode
-       :custom
-       (lsp-ui-peek-always-show t)
-       ; sideline show is disabled due to weird font size that mangles rust src view
-       (lsp-ui-sideline-show-hover nil)
-       (lsp-ui-doc-enable nil))
    #+END_SRC
 
 * Bazel
@@ -757,7 +710,6 @@
        ("`"   hydra-projectile-other-window/body "other window")
        ("q"   nil "cancel" :color blue))
    #+END_SRC
-
 
 ** Hydra expand region
   #+BEGIN_SRC emacs-lisp
@@ -1053,8 +1005,6 @@
          ("\\.org\\'" . org-mode)
          ("\\.txt\\'" . org-mode)
          ) auto-mode-alist))
-    (add-hook 'c-mode-hook 'lsp)
-    (add-hook 'c++-mode-hook 'lsp)
   #+END_SRC
 
 * Emacs Infos
@@ -1110,7 +1060,6 @@
      built-in package, you can report it with M-x report-emacs-bug.  Even for packages
      that are not built-in, you can ask for help at the help-gnu-emacs mailing list.
 
-
 * Packages not used
 ** linum-relative
    #+BEGIN_SRC emacs-lisp
@@ -1120,7 +1069,6 @@
      ;;    (setq linum-relative-current-symbol "")
      ;;    (add-hook 'prog-mode-hook 'linum-relative-mode))
    #+END_SRC
-
 
 ** eshell
    cd /USER@PUTTYCONFIG:/some/path
@@ -1154,12 +1102,6 @@
      ;  :ensure t)
      ;(use-package company-rtags
      ;  :ensure t)
-   #+END_SRC
-
-** rustic
-   #+BEGIN_SRC emacs-lisp
-     ;;(use-package rustic
-     ;;  :ensure t)
    #+END_SRC
 
 ** jinja2
