@@ -517,6 +517,14 @@
       (add-hook 'c-ts-mode-hook 'eglot-ensure)
     #+END_SRC
 
+** python
+    #+BEGIN_SRC  emacs-lisp
+      (add-hook 'python-ts-mode-hook 'eglot-ensure)
+      (setq major-mode-remap-alist
+        (append
+         '((python-mode . python-ts-mode)) major-mode-remap-alist))
+    #+END_SRC
+
 ** Typescript && react
    #+BEGIN_SRC  emacs-lisp
      ;;(use-package web-mode
