@@ -80,9 +80,8 @@
 
      (defun my-c-mode-config ()
        "For use in `c-mode-hook'."
-       (define-key c-mode-map (kbd "M-.") 'helm-gtags-dwim)
-       (define-key c-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
-       (unbind-key "\C-t" helm-gtags-mode-map)
+       (define-key c-mode-map (kbd "M-,") 'xref-pop-marker-stack)
+       (define-key c-mode-map (kbd "M-.") 'xref-find-definitions)
        (define-key c-mode-map (kbd "C-t") 'ff-find-related-file)
        )
 
@@ -90,7 +89,6 @@
        "For use in `c++-mode-hook'."
        (define-key c++-mode-map (kbd "M-,") 'xref-pop-marker-stack)
        (define-key c++-mode-map (kbd "M-.") 'xref-find-definitions)
-       (unbind-key "\C-t" helm-gtags-mode-map)
        (define-key c++-mode-map (kbd "C-t") 'ff-find-related-file)
        (setq flycheck-gcc-language-standard "c++17")
        (setq flycheck-clang-language-standard "c++17")
@@ -105,10 +103,6 @@
        :pin melpa
        :bind (:map vterm-mode-map ("C-y" . vterm-yank))
        :config (setq vterm-max-scrollback 100000)
-       )
-     (use-package multi-vterm
-       :ensure t
-       :after vterm
        )
    #+END_SRC
 
@@ -218,7 +212,6 @@
      )
    #+END_SRC
 
-
 * package for windows/buffers
 ** ample-theme
    #+BEGIN_SRC  emacs-lisp
@@ -246,16 +239,12 @@
        :ensure t
        :config
        (diminish 'abbrev-mode)
-       (diminish 'ace-isearch-mode)
        (diminish 'auto-fill-function)
        (diminish 'flycheck-mode)
        (diminish 'helm-mode)
        (diminish 'highlight-parentheses-mode)
        (diminish 'hl-line-mode)
        (diminish 'hs-minor-mode)
-       (diminish 'hungry-delete-mode)
-       (diminish 'modern-c++-font-lock-mode)
-       (diminish 'p4-mode)
        (diminish 'page-break-lines-mode)
        (diminish 'projectile-mode)
        (diminish 'recently-mode)
@@ -320,8 +309,6 @@
               helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
               helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
               helm-ff-file-name-history-use-recentf t)
-       ;:config 
-       ;(require 'helm-config)
        )
    #+END_SRC
 
@@ -403,10 +390,6 @@
        :ensure t
        :config
        (dashboard-setup-startup-hook)
-       ;;(defun dashboard-insert-custom ()
-       ;;  (insert "Dired"))
-       ;;(add-to-list 'dashboard-item-generators  '(custom . dashboard-insert-custom))
-       ;;(add-to-list 'dashboard-items '(custom) t)
        (setq dashboard-items '((recents  . 30)
                                (projects . 3)
                                (bookmarks . 5)
@@ -447,7 +430,8 @@
         :ensure t
         :init
         (add-hook 'after-init-hook #'global-flycheck-mode)
-        (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17"))))
+        (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17")))
+        (add-hook 'c++-ts-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17"))))
 
       ;; from https://typescript-eslint.io/getting-started
       ;;
@@ -477,6 +461,11 @@
           (when (and eslint (file-executable-p eslint))
             (setq-local flycheck-javascript-eslint-executable eslint))))
       (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
+
+      (use-package flycheck-eglot
+        :ensure t
+        :init (global-flycheck-eglot-mode 1)
+        )
     #+END_SRC
 
 ** hydra
@@ -519,7 +508,16 @@
         :config (which-key-mode))
     #+END_SRC
 
-* Typescript && react
+* Program-mode specifics
+** c/c++
+    #+BEGIN_SRC  emacs-lisp
+      (add-hook 'c++-mode-hook 'eglot-ensure)
+      (add-hook 'c++-ts-mode-hook 'eglot-ensure)
+      (add-hook 'c-mode-hook 'eglot-ensure)
+      (add-hook 'c-ts-mode-hook 'eglot-ensure)
+    #+END_SRC
+
+** Typescript && react
    #+BEGIN_SRC  emacs-lisp
      ;;(use-package web-mode
      ;;  :ensure t
@@ -577,12 +575,12 @@
 
    #+END_SRC
 
-* Perl: use cperl
+** Perl: use cperl
    #+BEGIN_SRC  emacs-lisp
      (defalias 'perl-mode 'cperl-mode)
    #+END_SRC
 
-* Docker
+** Docker
    #+BEGIN_SRC  emacs-lisp
      (use-package dockerfile-mode
        :ensure t
@@ -592,7 +590,7 @@
        )
    #+END_SRC
 
-* Markdown
+** Markdown
    #+BEGIN_SRC  emacs-lisp
      (use-package markdown-mode
        :ensure t
@@ -600,22 +598,23 @@
        :init (setq markdown-command "multimarkdown"))
    #+END_SRC
 
-* Rust
+** Rust
    #+BEGIN_SRC  emacs-lisp
      (use-package rustic
        :ensure t
        :init (setq rustic-lsp-client 'eglot)
        )
+     (add-hook 'rustic-mode-hook 'eglot-ensure)
    #+END_SRC
 
-* Kotlin
+** Kotlin
    #+BEGIN_SRC  emacs-lisp
      (use-package kotlin-mode
        :ensure t
        )
    #+END_SRC
 
-* Bazel
+** Bazel
    #+BEGIN_SRC  emacs-lisp
      (use-package bazel
        :ensure t
@@ -672,11 +671,11 @@
        "
           PROJECTILE: %(projectile-project-root)
 
-          Find File           Search/Tags          Buffers                Cache
+          Find File           Search/Edit          Buffers                Cache
      ------------------------------------------------------------------------------------------
      _s-f_: file           _a_: ag                _b_: switch to buffer  _c_: cache clear
-      _ff_: file dwim      _g_: update gtags    _s-k_: Kill all buffers  _x_: remove known project
-      _fd_: file curr dir  _o_: multi-occur       _X_: cleanup non-existing
+      _ff_: file dwim      _o_: multi-occur       _s-k_: Kill all buffers  _x_: remove known project
+      _fd_: file curr dir                         _X_: cleanup non-existing
        _r_: recent file                                               ^^^^_z_: cache current
        _d_: dir
 
@@ -688,8 +687,6 @@
        ("s-f" helm-projectile-find-file)
        ("ff"  projectile-find-file-dwim)
        ("fd"  projectile-find-file-in-directory)
-       ("g"   ggtags-update-tags)
-       ("s-g" ggtags-update-tags)
        ("K"   projectile-kill-buffers)
        ("s-k" projectile-kill-buffers)
        ("m"   projectile-multi-occur)
@@ -782,11 +779,13 @@
                  (setq-default fill-column 90)))
    #+END_SRC
 
-** programming hooks
+** common programming hooks
    #+BEGIN_SRC emacs-lisp
      (add-hook 'prog-mode-hook 'hs-minor-mode)
      (add-hook 'prog-mode-hook 'whitespace-mode)
      (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+
      ;;(add-hook 'c-mode-hook 'my-c-mode-config)
      ;;(add-hook 'c-mode-hook
      ;;          (lambda ()
@@ -796,7 +795,6 @@
      ;;                                     c-lineup-gcc-asm-reg
      ;;                                     linux-kernel-coding-style/c-lineup-arglist-tabs-only))))))
      ;;(add-hook 'c-mode-hook 'linux-kernel-coding-style/setup)
-     ;;(add-hook 'c++-mode-hook 'helm-gtags-mode)
      ;;(add-hook 'c++-mode-hook 'my-c++-mode-config)
 
      (add-hook 'makefile-mode-hook
@@ -988,13 +986,13 @@
       (append
        ;; File name ends in `.C'.
        '(
-         (".*/kernel/.*\\.h\\'" . c-mode)
-         (".*/prg/c/.*\\.h\\'" . c-mode)
-         ("\\.c\\'" . c-mode)
-         ("\\.h\\'" . c++-mode)
-         ("\\.cpp\\'" . c++-mode)
-         ("\\.cc\\'" . c++-mode)
-         ("\\.tpp\\'" . c++-mode)
+         (".*/kernel/.*\\.h\\'" . c-ts-mode)
+         (".*/prg/c/.*\\.h\\'" . c-ts-mode)
+         ("\\.c\\'" . c-ts-mode)
+         ("\\.h\\'" . c++-ts-mode)
+         ("\\.cpp\\'" . c++-ts-mode)
+         ("\\.cc\\'" . c++-ts-mode)
+         ("\\.tpp\\'" . c++-ts-mode)
          ("\\.org\\'" . org-mode)
          ("\\.txt\\'" . org-mode)
          ) auto-mode-alist))
@@ -1016,7 +1014,6 @@
 ** old packages
    helm-git-grep: helm for git grep, an incremental git-grep(1)
    helm-ls-git: list git files.
-   rtags + irony + company irony
    elpy: Emacs Python Development 
    navi-mode: super fast org mode search & editing
 
@@ -1069,34 +1066,6 @@
    ;;  (load-if-exists "~/.emacs.d/eshell/eshell_settings.el")
    #+END_SRC
 
-** rtags
-   #+BEGIN_SRC emacs-lisp
-     ;(use-package rtags
-     ;  :ensure t
-     ;  :after company-rtags
-     ;  :config
-     ;  (rtags-enable-standard-keybindings)
-     ;  (setq rtags-autostart-diagnostics t)
-     ;  (push 'company-rtags company-backends)
-     ;  ;;(define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
-     ;  (bind-keys :map c-mode-base-map ([C-tab] . company-complete))
-     ;
-     ;  ;; for realgud
-     ;  ;; in emacs, M-x load-library realgud
-     ;
-     ;  (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
-     ;  (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
-     ;
-     ;  :bind
-     ;  ([remap xref-find-definitions] . rtags-find-symbol-at-point)
-     ;  ([remap xref-pop-marker-stack] . rtags-location-stack-back)
-     ;  )
-     ;(use-package helm-rtags
-     ;  :ensure t)
-     ;(use-package company-rtags
-     ;  :ensure t)
-   #+END_SRC
-
 ** jinja2
    #+BEGIN_SRC emacs-lisp
    ;  (use-package jinja2-mode
@@ -1134,7 +1103,6 @@
      ;  (setq shell-prompt-pattern ":")
      ;  )
    #+END_SRC
-
 
 ** helm-tramp
    https://github.com/masasam/emacs-helm-tramp
@@ -1175,14 +1143,6 @@
      ;;  )
    #+END_SRC
 
-** modern-cpp-font-lock
-   #+BEGIN_SRC  emacs-lisp
-     ;;(use-package modern-cpp-font-lock
-     ;;  :ensure t
-     ;;  :init
-     ;;  (modern-c++-font-lock-global-mode))
-   #+END_SRC
-
 ** dired-recent
    #+BEGIN_SRC  emacs-lisp
      ;;(use-package dired-recent
@@ -1216,19 +1176,6 @@
      ;;        '("a" "s" "d" "f" "h" "j" "k" "l"))
      ;;  :bind
      ;;  ([remap other-window] . switch-window))
-   #+END_SRC
-
-** helm-gtags
-   #+BEGIN_SRC  emacs-lisp
-     ;;(use-package helm-gtags
-     ;;  :ensure t
-     ;;  :init
-     ;;  (setq
-     ;;   helm-gtags-ignore-case t
-     ;;   helm-gtags-auto-update t
-     ;;   helm-gtags-use-input-at-cursor t
-     ;;   helm-gtags-pulse-at-cursor t
-     ;;   helm-gtags-suggested-key-mapping t))
    #+END_SRC
 
 ** helm-elscreen
