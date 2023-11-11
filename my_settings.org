@@ -511,10 +511,13 @@
 * Program-mode specifics
 ** c/c++
     #+BEGIN_SRC  emacs-lisp
-      (add-hook 'c++-mode-hook 'eglot-ensure)
       (add-hook 'c++-ts-mode-hook 'eglot-ensure)
-      (add-hook 'c-mode-hook 'eglot-ensure)
       (add-hook 'c-ts-mode-hook 'eglot-ensure)
+      (setq major-mode-remap-alist
+        (append
+         '((c-mode . c-ts-mode)
+           (c++-mode . c++-ts-mode)
+           ) major-mode-remap-alist))
     #+END_SRC
 
 ** python
