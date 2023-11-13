@@ -530,28 +530,16 @@
 
 ** Typescript && react
    #+BEGIN_SRC  emacs-lisp
-     ;;(use-package web-mode
-     ;;  :ensure t
-     ;;  :mode (("\\.html?\\'" . web-mode)
-     ;;         ("\\.tsx\\'" . web-mode)
-     ;;         ("\\.jsx\\'" . web-mode))
-     ;;  :config
-     ;;  (setq web-mode-markup-indent-offset 2
-     ;;        web-mode-css-indent-offset 2
-     ;;        web-mode-code-indent-offset 2
-     ;;        web-mode-block-padding 2
-     ;;        web-mode-comment-style 2
-     ;;
-     ;;        web-mode-enable-css-colorization t
-     ;;        web-mode-enable-auto-pairing t
-     ;;        web-mode-enable-comment-keywords t
-     ;;        web-mode-enable-current-element-highlight t
-     ;;        )
-     ;;  (add-hook 'web-mode-hook
-     ;;            (lambda ()
-     ;;              (when (string-equal "tsx" (file-name-extension buffer-file-name))
-     ;;		(setup-tide-mode))))
-     ;;  (flycheck-add-mode 'typescript-tslint 'web-mode))
+      (setq major-mode-remap-alist
+        (append
+         '((typescript-ts-mode . typescript-ts-mode)
+           (javascript-mode . js-ts-mode)
+           (js-mode . js-ts-mode)
+           ) major-mode-remap-alist))
+
+      ;; for now, eglot is not reliable. use tide instead
+      ;;(add-hook 'typescript-ts-mode-hook 'eglot-ensure)
+      ;;(add-hook 'tsx-ts-mode-hook 'eglot-ensure)
 
      (defun setup-tide-mode ()
        (interactive)
@@ -565,25 +553,14 @@
        ;; `M-x package-install [ret] company`
        (company-mode +1))
 
-     (use-package typescript-mode
-       :ensure t
-       :config
-       (setq typescript-indent-level 2)
-       (add-hook 'typescript-mode #'subword-mode))
-
      (use-package tide
        :ensure t
-       :after (typescript-mode company flycheck)
-       :hook ((typescript-mode . tide-setup)
-	      (typescript-mode . tide-hl-identifier-mode)
-	      (before-save . tide-format-before-save)))
-
-     (use-package js2-mode
-       :ensure t)
-     (add-hook 'js2-mode-hook #'setup-tide-mode)
-     ;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
-     (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-
+       :after (typescript-ts-mode company flycheck)
+       :hook ((typescript-ts-mode . tide-setup)
+          (tsx-ts-mode . tide-setup)
+          (typescript-ts-mode . tide-hl-identifier-mode)
+          (tsx-ts-mode . tide-hl-identifier-mode)
+          (before-save . tide-format-before-save)))
    #+END_SRC
 
 ** Perl: use cperl
@@ -1009,6 +986,10 @@
          ("\\.cpp\\'" . c++-ts-mode)
          ("\\.cc\\'" . c++-ts-mode)
          ("\\.tpp\\'" . c++-ts-mode)
+         ("\\.ts\\'" . typescript-ts-mode)
+         ("\\.js\\'" . typescript-ts-mode)
+         ("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.jsx\\'" . tsx-ts-mode)
          ("\\.org\\'" . org-mode)
          ("\\.txt\\'" . org-mode)
          ) auto-mode-alist))
