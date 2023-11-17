@@ -767,6 +767,12 @@
       (setq-default c-basic-offset 4)
     #+END_SRC
 
+  - suppress eldoc not to disturb minibuffer
+    #+BEGIN_SRC emacs-lisp
+      (setq eldoc-echo-area-use-multiline-p nil)
+      (setq eldoc-echo-area-prefer-doc-buffer t)
+    #+END_SRC
+
 * Mode hooks
 ** system hooks
    #+BEGIN_SRC emacs-lisp
