@@ -96,6 +96,15 @@
    #+END_SRC
 
 * packages for systems
+** dirvish
+   #+BEGIN_SRC emacs-lisp
+     (use-package dirvish
+       :ensure t
+       :init
+       (dirvish-override-dired-mode)
+       )
+   #+END_SRC
+
 ** vterm
    #+BEGIN_SRC emacs-lisp
      (use-package vterm
@@ -256,12 +265,15 @@
        )
    #+END_SRC
 
-** elscreen
+** perspective
    #+BEGIN_SRC  emacs-lisp
-     (use-package elscreen
-       :ensure t
+     (use-package perspective
+       :bind
+       ("C-x C-b" . persp-list-buffers)         ; or use a nicer switcher, see below
+       :custom
+       (persp-mode-prefix-key (kbd "C-c p"))  ; pick your own prefix key here
        :init
-       (elscreen-start))
+       (persp-mode))
    #+END_SRC
 
 ** volatile-highlights
@@ -390,7 +402,7 @@
        :ensure t
        :config
        (dashboard-setup-startup-hook)
-       (setq dashboard-items '((recents  . 30)
+       (setq dashboard-items '((recents  . 15)
                                (projects . 3)
                                (bookmarks . 5)
                                (registers . 5)
@@ -804,7 +816,7 @@
 * Keys: Global
   ;;(unbind-key "C-t" dired-mode-map)
   #+BEGIN_SRC emacs-lisp
-  (bind-key "C-c p" 'hydra-projectile/body)
+  (bind-key "C-c C-p" 'hydra-projectile/body)
   (bind-key "M-g" 'goto-line)
   (bind-key "<M-left>" 'windmove-left)
   (bind-key "<M-right>" 'windmove-right)
@@ -814,7 +826,7 @@
   (bind-key "<M-S-right>" 'enlarge-window-horizontally)
   (bind-key "<M-S-down>" 'shrink-window)
   (bind-key "<M-S-up>" 'enlarge-window)
-  (bind-key "C-x C-b" 'helm-mini)
+  ;;(bind-key "C-x C-b" 'helm-mini)
   (bind-key "C-x v" 'view-file)
   (bind-key "C-c e" 'switch-to-scratch)
   (bind-key "C-c C-e" 'eldoc-doc-buffer)
