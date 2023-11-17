@@ -268,8 +268,6 @@
 ** perspective
    #+BEGIN_SRC  emacs-lisp
      (use-package perspective
-       :bind
-       ("C-x C-b" . persp-list-buffers)         ; or use a nicer switcher, see below
        :custom
        (persp-mode-prefix-key (kbd "C-c p"))  ; pick your own prefix key here
        :init
@@ -302,6 +300,7 @@
        :bind (("C-c h" . helm-command-prefix)
               ("C-x f" . helm-find-files)
               ("C-c b" . helm-bookmarks)
+              ("C-x C-b" . helm-buffers-list) ; perspective mode aware
               ("C-b" . helm-mark-ring)
               ("M-x" . helm-M-x)
               ("C-x r i" . helm-register)
