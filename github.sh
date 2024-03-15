@@ -24,3 +24,8 @@ git remote add origin git@github.com:freeaion/emacs_setting.git
 
 # pull!
 git pull origin master
+
+# reminder for tree-sitter
+# https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
+# https://github.com/emacs-tree-sitter/tree-sitter-langs/releases
+echo "download tree-sitter grammar and rename .so files for grammar as libtree-sitter-\${lang}.so"
