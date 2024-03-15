@@ -265,15 +265,6 @@
        )
    #+END_SRC
 
-** perspective
-   #+BEGIN_SRC  emacs-lisp
-     (use-package perspective
-       :custom
-       (persp-mode-prefix-key (kbd "C-c p"))  ; pick your own prefix key here
-       :init
-       (persp-mode))
-   #+END_SRC
-
 ** volatile-highlights
    #+BEGIN_SRC emacs-lisp
      (use-package volatile-highlights
