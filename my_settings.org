@@ -511,6 +511,14 @@
     #+END_SRC
 
 * Program-mode specifics
+** bash
+    #+BEGIN_SRC  emacs-lisp
+      (setq major-mode-remap-alist
+        (append
+         '((sh-mode . bash-ts-mode)
+           ) major-mode-remap-alist))
+    #+END_SRC
+
 ** c/c++
     #+BEGIN_SRC  emacs-lisp
       (add-hook 'c++-ts-mode-hook 'eglot-ensure)
@@ -524,10 +532,10 @@
 
 ** python
     #+BEGIN_SRC  emacs-lisp
-      (add-hook 'python-ts-mode-hook 'eglot-ensure)
       (setq major-mode-remap-alist
         (append
          '((python-mode . python-ts-mode)) major-mode-remap-alist))
+      (add-hook 'python-ts-mode-hook 'eglot-ensure)
     #+END_SRC
 
 ** Typescript && react
@@ -572,9 +580,6 @@
 
 ** Docker
    #+BEGIN_SRC  emacs-lisp
-     (use-package dockerfile-mode
-       :ensure t
-       )
      (use-package docker-compose-mode
        :ensure t
        )
@@ -599,7 +604,7 @@
 
 ** Kotlin
    #+BEGIN_SRC  emacs-lisp
-     (use-package kotlin-mode
+     (use-package kotlin-ts-mode
        :ensure t
        )
    #+END_SRC
@@ -897,7 +902,7 @@
     (setq exec-path (append  
          '((expand-file-name "~/opt/bin")
            ) exec-path))
-                            
+
     ;; setup user home directory to use custom lisp package
     ;;(defvar use-home)
     ;;(setq use-home (concat (expand-file-name "~/.emacs.d") "/"))
@@ -989,17 +994,21 @@
        '(
          (".*/kernel/.*\\.h\\'" . c-ts-mode)
          (".*/prg/c/.*\\.h\\'" . c-ts-mode)
+         ("\\.sh\\'" . bash-ts-mode)
          ("\\.c\\'" . c-ts-mode)
-         ("\\.h\\'" . c++-ts-mode)
-         ("\\.cpp\\'" . c++-ts-mode)
          ("\\.cc\\'" . c++-ts-mode)
-         ("\\.tpp\\'" . c++-ts-mode)
-         ("\\.ts\\'" . typescript-ts-mode)
-         ("\\.js\\'" . typescript-ts-mode)
-         ("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.cpp\\'" . c++-ts-mode)
+         ("\\.h\\'" . c++-ts-mode)
+         ("\\.js\\'" . js-ts-mode)
          ("\\.jsx\\'" . tsx-ts-mode)
          ("\\.org\\'" . org-mode)
+         ("\\.py\\'" . python-ts-mode)
+         ("\\.tpp\\'" . c++-ts-mode)
+         ("\\.ts\\'" . typescript-ts-mode)
+         ("\\.tsx\\'" . tsx-ts-mode)
          ("\\.txt\\'" . org-mode)
+         ("\\.yaml\\'" . yaml-ts-mode)
+         ("\\.yml\\'" . yaml-ts-mode)
          ) auto-mode-alist))
   #+END_SRC
 
