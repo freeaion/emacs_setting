@@ -605,18 +605,6 @@
    #+END_SRC
 
 * Hydra defs
-** Hydra multi vterm
-   #+BEGIN_SRC emacs-lisp
-     (defhydra multi-vterm-hydra (:hint nil)
-       "Vterm"
-       ("c" multi-vterm "create" :exit t)
-       ("n" multi-vterm-next "next" :exit t)
-       ("t" multi-vterm-dedicated-toggle "toggle" :exit t)
-       ("z" elscreen-select-and-goto "elscreen" :exit t)
-       ("q" nil "quit"))
-     (bind-key "C-c t" 'multi-vterm-hydra/body)
-   #+END_SRC
-   
 ** Hydra multi cursors
    #+BEGIN_SRC emacs-lisp
      (defhydra multiple-cursors-hydra (:hint nil)
@@ -925,9 +913,6 @@
              (split-window-horizontally arg)
            (split-window-vertically arg))) t)
      '(ediff-window-setup-function (quote ediff-setup-windows-plain))
-     '(elscreen-default-buffer-name "new_elscreen")
-     '(elscreen-display-tab nil)
-     '(elscreen-tab-display-control nil)
      '(fill-column 80)
      '(frame-title-format "emacs - %b" t)
      '(global-company-mode t)
@@ -955,6 +940,7 @@
      '(show-paren-style (quote expression))
      '(tab-width 4)
      '(tool-bar-mode nil)
+     '(treesit-font-lock-level 4)
      '(whitespace-style
        (quote
         (face trailing tabs spaces lines lines-tail empty indentation::tab indentation::space indentation tab-mark)))
@@ -1179,11 +1165,3 @@
      ;;  :bind
      ;;  ([remap other-window] . switch-window))
    #+END_SRC
-
-** helm-elscreen
-   #+BEGIN_SRC  emacs-lisp
-     ;;(use-package helm-elscreen
-     ;;  :ensure t
-     ;;  :bind (("C-z h" . helm-elscreen)))
-   #+END_SRC
-   
