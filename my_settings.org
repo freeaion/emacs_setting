@@ -961,6 +961,7 @@
     ;; ;; If there is more than one, they won't work right.
     ;; '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal))))
     ;; '(vertical-border ((t (:background "#454545" :foreground "dim gray")))))
+    (set-face-attribute 'default nil :height 120)
   #+END_SRC
 
 * Additional setting files
