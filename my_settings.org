@@ -427,13 +427,6 @@
    #+END_SRC
 
 * misc packages
-** envrc
-    #+BEGIN_SRC  emacs-lisp
-      (use-package envrc
-        :ensure t
-        :hook (after-init . envrc-global-mode)
-       )
-    #+END_SRC
 
 ** flycheck
     #+BEGIN_SRC  emacs-lisp
@@ -541,18 +534,6 @@
 
 ** python
     #+BEGIN_SRC  emacs-lisp
-      (use-package pyvenv
-        :ensure t
-        :config
-        (pyvenv-mode t)
-
-        ;; Set correct Python interpreter
-        (setq pyvenv-post-activate-hooks
-              (list (lambda ()
-                      (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))))
-        (setq pyvenv-post-deactivate-hooks
-              (list (lambda ()
-                      (setq python-shell-interpreter "python3")))))
       (setq major-mode-remap-alist
         (append
          '((python-mode . python-ts-mode)) major-mode-remap-alist))
