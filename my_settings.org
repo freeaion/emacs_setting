@@ -428,6 +428,14 @@
 
 * misc packages
 
+** envrc
+    #+BEGIN_SRC  emacs-lisp
+      (use-package envrc
+        :ensure t
+        :hook (after-init . envrc-global-mode)
+       )
+    #+END_SRC
+
 ** flycheck
     #+BEGIN_SRC  emacs-lisp
       (use-package flycheck
