@@ -602,6 +602,22 @@
      (add-hook 'rustic-mode-hook 'eglot-ensure)
    #+END_SRC
 
+** Dart && Flutter
+   #+BEGIN_SRC  emacs-lisp
+     (use-package dart-mode
+       :ensure t
+       ;; Optional
+       :hook (dart-mode . flutter-test-mode))
+
+     (use-package flutter
+       :ensure t
+       :after dart-mode
+       :bind (:map dart-mode-map
+                   ("C-M-x" . #'flutter-run-or-hot-reload))
+       :custom
+       (flutter-sdk-path "~/opt/flutter/"))
+  #+END_SRC
+
 ** Kotlin
    #+BEGIN_SRC  emacs-lisp
      (use-package kotlin-ts-mode
