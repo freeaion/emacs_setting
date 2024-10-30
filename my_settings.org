@@ -340,7 +340,8 @@
        :ensure t
        :bind (("C-x b" . helm-projectile-switch-to-buffer))
        :config
-       (helm-projectile-on))
+       (helm-projectile-on)
+      )
    #+END_SRC
 
 ** helm-swoop
@@ -670,30 +671,23 @@
        "
           PROJECTILE: %(projectile-project-root)
 
-          Find File           Search/Edit          Buffers                Cache
-     ------------------------------------------------------------------------------------------
-     _s-f_: file           _a_: ag                _b_: switch to buffer  _c_: cache clear
-      _ff_: file dwim      _o_: multi-occur       _s-k_: Kill all buffers  _x_: remove known project
-      _fd_: file curr dir                         _X_: cleanup non-existing
-       _r_: recent file                                               ^^^^_z_: cache current
-       _d_: dir
-
-     "
+          Dir/File          Search/Edit         Buffers                  Cache
+     ------------------------------------------------------------------------------------
+      _f_: file          _a_: ag            _b_: switch to buffer   _c_: cache clear
+      _d_: dir           _o_: multi-occur   _K_: Kill all buffers   _C_: remove known project
+      _r_: recent file                      _X_: cleanup non-exist  _z_: cache current
+       "
        ("a"   helm-projectile-ag)
        ("b"   helm-projectile-switch-to-buffer)
        ("c"   projectile-invalidate-cache)
-       ("d"   projectile-find-dir)
-       ("s-f" helm-projectile-find-file)
-       ("ff"  projectile-find-file-dwim)
-       ("fd"  projectile-find-file-in-directory)
+       ("d"   helm-projectile-find-dir)
+       ("f"   helm-projectile-find-file)
        ("K"   projectile-kill-buffers)
-       ("s-k" projectile-kill-buffers)
-       ("m"   projectile-multi-occur)
        ("o"   projectile-multi-occur)
        ("p"   helm-projectile "project")
        ("s"   projectile-switch-project "switch prj")
-       ("r"   projectile-recentf)
-       ("x"   projectile-remove-known-project)
+       ("r"   helm-projectile-recentf)
+       ("C"   projectile-remove-known-project)
        ("X"   projectile-cleanup-known-projects)
        ("z"   projectile-cache-current-file)
        ("`"   hydra-projectile-other-window/body "other window")
@@ -821,7 +815,7 @@
 * Keys: Global
   ;;(unbind-key "C-t" dired-mode-map)
   #+BEGIN_SRC emacs-lisp
-  (bind-key "C-c C-p" 'hydra-projectile/body)
+  (bind-key "C-c p" 'hydra-projectile/body)
   (bind-key "M-g" 'goto-line)
   (bind-key "<M-left>" 'windmove-left)
   (bind-key "<M-right>" 'windmove-right)
@@ -956,7 +950,7 @@
      '(package-enable-at-startup nil)
      '(projectile-completion-system (quote helm))
      '(projectile-mode t nil (projectile))
-     '(projectile-switch-project-action (quote helm-projectile-switch-to-buffer))
+     '(projectile-switch-project-action (quote helm-projectile-find-file-dwim))
      '(projectile-tags-backend (quote find-tag))
      '(projectile-tags-command "")
      '(projectile-tags-file-name "")
