@@ -633,6 +633,13 @@
        )
    #+END_SRC
 
+** Graphql
+   #+BEGIN_SRC  emacs-lisp
+     (use-package graphql-mode
+       :ensure t
+       )
+   #+END_SRC
+
 * Hydra defs
 ** Hydra multi cursors
    #+BEGIN_SRC emacs-lisp
