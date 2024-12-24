@@ -774,6 +774,11 @@
       (setq eldoc-echo-area-prefer-doc-buffer t)
     #+END_SRC
 
+  - for alt + '/', dabbrev-expand, makes it case sensitive for programming
+    #+BEGIN_SRC emacs-lisp
+      (setq dabbrev-case-fold-search nil)
+    #+END_SRC
+
 * Mode hooks
 ** system hooks
    #+BEGIN_SRC emacs-lisp
