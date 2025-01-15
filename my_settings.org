@@ -130,6 +130,7 @@
        :ensure t
        :custom
        (company-idle-delay 0.5) ;; how long to wait until popup
+       :hook (lsp-mode . company-mode)
        :config
        (setq company-minimum-prefix-length 1)
        (global-company-mode t))
@@ -608,11 +609,26 @@
      (use-package dart-mode
        :ensure t
        ;; Optional
-       :hook (dart-mode . flutter-test-mode))
+       :hook (dart-mode . lsp))
+
+     (use-package lsp-mode
+       :ensure t
+       :commands lsp
+       :config
+       (setq lsp-dart-flutter-sdk-dir "~/opt/flutter/")
+       )
+
+     (use-package lsp-dart
+       :ensure t
+       :after lsp-mode
+       :config
+       :hook (dart-mode . lsp)
+       )
 
      (use-package flutter
        :ensure t
        :after dart-mode
+       :hook (dart-mode . flutter-test-mode)
        :bind (:map dart-mode-map
                    ("C-M-x" . #'flutter-run-or-hot-reload))
        :custom
@@ -918,6 +934,8 @@
     ;;(setq use-home (concat (expand-file-name "~/.emacs.d") "/"))
     ;;(setq load-path (append (list (concat use-home "lisp")
 
+    ;; don't want to load TAGS file anymore. use lsp or eglot instead
+    (setq tags-file-name nil)
   #+END_SRC
 
 * Custom settings 
