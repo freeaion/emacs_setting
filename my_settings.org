@@ -256,7 +256,6 @@
        (diminish 'hl-line-mode)
        (diminish 'hs-minor-mode)
        (diminish 'page-break-lines-mode)
-       (diminish 'projectile-mode)
        (diminish 'recently-mode)
        (diminish 'undo-tree-mode)
        (diminish 'visual-line-mode)
@@ -335,16 +334,6 @@
             )
    #+END_SRC
 
-** helm-projectile
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-projectile
-       :ensure t
-       :bind (("C-x b" . helm-projectile-switch-to-buffer))
-       :config
-       (helm-projectile-on)
-      )
-   #+END_SRC
-
 ** helm-swoop
    #+BEGIN_SRC  emacs-lisp
      (use-package helm-swoop
@@ -385,6 +374,23 @@
         ;; Face name is `helm-swoop-line-number-face`
         helm-swoop-use-line-number-face t)
        :config (helm-mode))
+   #+END_SRC
+
+** helm-project
+   #+BEGIN_SRC  emacs-lisp
+     (use-package helm-project
+       :ensure t
+       :bind (("C-x C-p" . helm-project)
+             ("C-x b" . helm-project-buffers)
+             ([remap project-find-regexp] . helm-project-grep-ag)
+             ([remap project-switch-to-buffer] . helm-project-buffers)
+             ([remap project-find-file] . helm-project-files)
+             ([remap project-switch-project] . helm-project-list-projects)
+             :map helm-project-map
+                  ;; Any changes to keybinds on the helm-project-map should be made
+                  ;; before initializing the sources for the first time, i.e. before
+                  ;; calling any of the `helm-project-*' commands.
+             ("C-c s" . helm-project-grep-ag)))
    #+END_SRC
 
 * special packages
@@ -504,15 +510,6 @@
         :ensure t
         :config
         (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-    #+END_SRC
-
-** projectile
-    #+BEGIN_SRC  emacs-lisp
-      (use-package projectile
-        :ensure t
-        :config
-        (projectile-mode +1)
-        )
     #+END_SRC
 
 ** which-key
@@ -680,43 +677,6 @@
        ("q" nil))
    #+END_SRC
 
-** Hydra projectile
-   #+BEGIN_SRC emacs-lisp
-     (defhydra hydra-projectile-other-window (:color teal)
-       "projectile-other-window"
-       ("f"  projectile-find-file-other-window        "file")
-       ("g"  projectile-find-file-dwim-other-window   "file dwim")
-       ("d"  projectile-find-dir-other-window         "dir")
-       ("b"  projectile-switch-to-buffer-other-window "buffer")
-       ("q"  nil                                      "cancel" :color blue))
-
-     (defhydra hydra-projectile (:color teal :hint nil)
-       "
-          PROJECTILE: %(projectile-project-root)
-
-          Dir/File          Search/Edit         Buffers                  Cache
-     ------------------------------------------------------------------------------------
-      _f_: file          _a_: ag            _b_: switch to buffer   _c_: cache clear
-      _d_: dir           _o_: multi-occur   _K_: Kill all buffers   _C_: remove known project
-      _r_: recent file                      _X_: cleanup non-exist  _z_: cache current
-       "
-       ("a"   helm-projectile-ag)
-       ("b"   helm-projectile-switch-to-buffer)
-       ("c"   projectile-invalidate-cache)
-       ("d"   helm-projectile-find-dir)
-       ("f"   helm-projectile-find-file)
-       ("K"   projectile-kill-buffers)
-       ("o"   projectile-multi-occur)
-       ("p"   helm-projectile "project")
-       ("s"   projectile-switch-project "switch prj")
-       ("r"   helm-projectile-recentf)
-       ("C"   projectile-remove-known-project)
-       ("X"   projectile-cleanup-known-projects)
-       ("z"   projectile-cache-current-file)
-       ("`"   hydra-projectile-other-window/body "other window")
-       ("q"   nil "cancel" :color blue))
-   #+END_SRC
-
 ** Hydra expand region
   #+BEGIN_SRC emacs-lisp
     (defhydra expand-copy-hydra (:hint nil)
@@ -843,7 +803,6 @@
 * Keys: Global
   ;;(unbind-key "C-t" dired-mode-map)
   #+BEGIN_SRC emacs-lisp
-  (bind-key "C-c p" 'hydra-projectile/body)
   (bind-key "M-g" 'goto-line)
   (bind-key "<M-left>" 'windmove-left)
   (bind-key "<M-right>" 'windmove-right)
@@ -936,6 +895,9 @@
 
     ;; don't want to load TAGS file anymore. use lsp or eglot instead
     (setq tags-file-name nil)
+
+    ;; project root marker
+    (setq project-vc-extra-root-markers '("Cargo.toml" "package.json" "requirements.txt" ".git"))
   #+END_SRC
 
 * Custom settings 
@@ -978,12 +940,6 @@
      '(menu-bar-mode nil)
      '(next-line-add-newlines nil)
      '(package-enable-at-startup nil)
-     '(projectile-completion-system (quote helm))
-     '(projectile-mode t nil (projectile))
-     '(projectile-switch-project-action (quote helm-projectile-find-file-dwim))
-     '(projectile-tags-backend (quote find-tag))
-     '(projectile-tags-command "")
-     '(projectile-tags-file-name "")
      '(query-replace-highlight t)
      '(scroll-conservatively 1)
      '(scroll-preserve-screen-position t)
