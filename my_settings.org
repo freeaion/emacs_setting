@@ -897,7 +897,7 @@
     (setq tags-file-name nil)
 
     ;; project root marker
-    (setq project-vc-extra-root-markers '("Cargo.toml" "package.json" "requirements.txt" ".git"))
+    (setq project-vc-extra-root-markers '("Cargo.toml" "package.json" "requirements.txt" ".git" ".prj_root"))
   #+END_SRC
 
 * Custom settings 
