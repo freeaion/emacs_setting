@@ -51,7 +51,17 @@
        "Switch to scratch buffer"
        (interactive)
        (switch-to-buffer "*scratch*"))
-  #+END_SRC
+
+     (defun rk/ai-tab ()
+       "Tab command that will complet with copilot if a completion is
+     available. Otherwise will try company, yasnippet or normal
+     tab-indent."
+       (interactive)
+       (or
+        (minuet-accept-suggestion)
+        (indent-for-tab-command))
+       )
+    #+END_SRC
 
 ** programming functions
 *** c/c++ functions
@@ -96,6 +106,23 @@
    #+END_SRC
 
 * packages for systems
+** straight: not default of emacs. requiring bootstrap here
+   #+BEGIN_SRC emacs-lisp
+     (let ((bootstrap-file
+            (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+           (bootstrap-version 6))
+       (unless (file-exists-p bootstrap-file)
+         (with-current-buffer
+             (url-retrieve-synchronously
+              "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+              'silent 'inhibit-cookies)
+           (goto-char (point-max))
+           (eval-print-last-sexp)))
+       (load bootstrap-file nil 'nomessage))
+     (setq straight-use-package-by-default t)
+     (straight-use-package 'use-package)
+   #+END_SRC
+
 ** dirvish
    #+BEGIN_SRC emacs-lisp
      (use-package dirvish
@@ -143,17 +170,6 @@
          :ensure t
          :config
          (company-quickhelp-mode))
-   #+END_SRC
-
-** yasnippet
-   yasnippet for code completion
-   #+BEGIN_SRC  emacs-lisp
-     (use-package yasnippet
-       :ensure
-       :config
-       (yas-reload-all)
-       (add-hook 'prog-mode-hook 'yas-minor-mode)
-       (add-hook 'text-mode-hook 'yas-minor-mode))
    #+END_SRC
 
 ** expand-region
@@ -435,13 +451,12 @@
    #+END_SRC
 
 * misc packages
-
 ** envrc
     #+BEGIN_SRC  emacs-lisp
-      (use-package envrc
-        :ensure t
-        :hook (after-init . envrc-global-mode)
-       )
+      ;;(use-package envrc
+      ;;  :ensure t
+      ;;  :hook (after-init . envrc-global-mode)
+      ;; )
     #+END_SRC
 
 ** flycheck
@@ -520,6 +535,49 @@
     #+END_SRC
 
 * Program-mode specifics
+** copilot
+    #+BEGIN_SRC  emacs-lisp
+      ;;(use-package copilot
+      ;;  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+      ;;  :ensure t
+      ;;  :init
+      ;;  (add-to-list 'completion-at-point-functions #'copilot-complete)
+      ;;  :config
+      ;;  (add-hook 'prog-mode-hook 'copilot-mode)
+      ;;  :bind (("C-<tab>" . copilot-next-completion))
+      ;;  )
+    #+END_SRC
+
+** minuet
+    #+BEGIN_SRC  emacs-lisp
+      (package-install 'minuet)
+      (use-package minuet
+        :bind
+        (
+         ;;("M-y" . #'minuet-complete-with-minibuffer) ;; use minibuffer for completion
+         ("C-c m" . #'minuet-configure-provider)
+         :map minuet-active-mode-map
+         ;; These keymaps activate only when a minuet suggestion is displayed in the current buffer
+         ("C-c i" . #'minuet-show-suggestion) ;; use overlay for completion
+         ("C-<tab>" . #'minuet-next-suggestion) ;; invoke completion or cycle to previous completion
+         ;; Accept the first line of completion, or N lines with a numeric-prefix:
+         ;; e.g. C-u 2 M-a will accepts 2 lines of completion.
+         ;;("M-a" . #'minuet-accept-suggestion-line)
+         ;;("M-e" . #'minuet-dismiss-suggestion)
+         )
+
+        :init
+        ;; if you want to enable auto suggestion.
+        ;; Note that you can manually invoke completions without enable minuet-auto-suggestion-mode
+        (add-hook 'prog-mode-hook #'minuet-auto-suggestion-mode)
+
+        :config
+        ;; You can use M-x minuet-configure-provider to interactively configure provider and model
+        (setq minuet-provider 'gemini)
+
+        (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 512))
+    #+END_SRC
+
 ** bash
     #+BEGIN_SRC  emacs-lisp
       (setq major-mode-remap-alist
@@ -803,26 +861,27 @@
 * Keys: Global
   ;;(unbind-key "C-t" dired-mode-map)
   #+BEGIN_SRC emacs-lisp
-  (bind-key "M-g" 'goto-line)
-  (bind-key "<M-left>" 'windmove-left)
-  (bind-key "<M-right>" 'windmove-right)
-  (bind-key "<M-up>" 'windmove-up)
-  (bind-key "<M-down>" 'windmove-down)
-  (bind-key "<M-S-left>" 'shrink-window-horizontally)
-  (bind-key "<M-S-right>" 'enlarge-window-horizontally)
-  (bind-key "<M-S-down>" 'shrink-window)
-  (bind-key "<M-S-up>" 'enlarge-window)
-  ;;(bind-key "C-x C-b" 'helm-mini)
-  (bind-key "C-x v" 'view-file)
-  (bind-key "C-c e" 'switch-to-scratch)
-  (bind-key "C-c C-e" 'eldoc-doc-buffer)
-  (bind-key "C-c m" 'multiple-cursors-hydra/body)
-  (bind-key "C-x 3" 'split-and-follow-vertically)
-  (bind-key "C-x 2" 'split-and-follow-horizontally)
-  (bind-key "C-c k w" 'kill-whole-word)
-  (bind-key "C-c k l" 'kill-whole-line)
-  (bind-key "C-c c l" 'copy-whole-line)
-  (bind-key "C-x k" 'kill-curr-buffer)
+    (bind-key "M-g" 'goto-line)
+    (bind-key "<M-left>" 'windmove-left)
+    (bind-key "<M-right>" 'windmove-right)
+    (bind-key "<M-up>" 'windmove-up)
+    (bind-key "<M-down>" 'windmove-down)
+    (bind-key "<M-S-left>" 'shrink-window-horizontally)
+    (bind-key "<M-S-right>" 'enlarge-window-horizontally)
+    (bind-key "<M-S-down>" 'shrink-window)
+    (bind-key "<M-S-up>" 'enlarge-window)
+    ;;(bind-key "C-x C-b" 'helm-mini)
+    (bind-key "C-x v" 'view-file)
+    (bind-key "C-c e" 'switch-to-scratch)
+    (bind-key "C-c C-e" 'eldoc-doc-buffer)
+    (bind-key "C-c m" 'multiple-cursors-hydra/body)
+    (bind-key "C-x 3" 'split-and-follow-vertically)
+    (bind-key "C-x 2" 'split-and-follow-horizontally)
+    (bind-key "C-c k w" 'kill-whole-word)
+    (bind-key "C-c k l" 'kill-whole-line)
+    (bind-key "C-c c l" 'copy-whole-line)
+    (bind-key "C-x k" 'kill-curr-buffer)
+    (bind-key "<tab>" 'rk/ai-tab)
   #+END_SRC
 
 * Keys: Mode specifics
