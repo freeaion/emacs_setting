@@ -9,7 +9,11 @@
 ;; x: execute deletion/install/upgrade
 (require 'package)
 (setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(setq package-archive-priorities '(("gnu" . 10)
+                                   ("melpa" . 5))
+      package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://stable.melpa.org/packages/")
+                         ("melpa-devel" . "https://melpa.org/packages/")))
 (package-initialize)
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/my_settings.org"))
