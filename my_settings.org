@@ -314,13 +314,6 @@
        )
    #+END_SRC
 
-** helm-ag
-   #+BEGIN_SRC  emacs-lisp
-     (use-package helm-ag
-       :ensure t
-       )
-   #+END_SRC
-
 ** helm-company
    #+BEGIN_SRC  emacs-lisp
           (use-package helm-company
@@ -1174,3 +1167,11 @@
      ;;  :bind
      ;;  ([remap other-window] . switch-window))
    #+END_SRC
+
+** helm-ag
+   #+BEGIN_SRC  emacs-lisp
+     ;; (use-package helm-ag
+     ;;   :ensure t
+     ;;   )
+   #+END_SRC
+
