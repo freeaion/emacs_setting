@@ -461,6 +461,18 @@
     #+END_SRC
 
 * Program-mode specifics
+** aidermacs
+    #+BEGIN_SRC  emacs-lisp
+      (use-package aidermacs
+        :bind (("C-c a" . aidermacs-transient-menu))
+        :config
+        ; Set API_KEY in .bashrc, that will automatically picked up by aider or in elisp
+        ;(setenv "GEMINI_API_KEY" "")
+        :custom
+        ; See the Configuration section below
+        (aidermacs-default-chat-mode 'architect))
+    #+END_SRC
+
 ** copilot
     #+BEGIN_SRC  emacs-lisp
       (use-package copilot
