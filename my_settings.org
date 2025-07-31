@@ -656,19 +656,19 @@
 
 ** Hydra helm-ag
   #+BEGIN_SRC emacs-lisp
-    (defhydra ag-hydra (:hint nil)
-      "Helm ag"
-      ("a" helm-ag "ag" :exit t)
-      ("A" helm-ag-project-root "ag-root" :exit t)
-      ("b" helm-do-ag-buffers "bufs" :exit t)
-      ("d" helm-do-ag "do-ag" :exit t)
-      ("f" helm-do-ag-this-file "file" :exit t)
-
-      ("c" helm-ag-clear-stack "clear" :exit t)
-      ("p" helm-ag-pop-stack "pop" :exit t)
-
-      ("q" nil))
-    (bind-key "C-c a" 'ag-hydra/body)
+    ;(defhydra ag-hydra (:hint nil)
+    ;  "Helm ag"
+    ;  ("a" helm-ag "ag" :exit t)
+    ;  ("A" helm-ag-project-root "ag-root" :exit t)
+    ;  ("b" helm-do-ag-buffers "bufs" :exit t)
+    ;  ("d" helm-do-ag "do-ag" :exit t)
+    ;  ("f" helm-do-ag-this-file "file" :exit t)
+    ;
+    ;  ("c" helm-ag-clear-stack "clear" :exit t)
+    ;  ("p" helm-ag-pop-stack "pop" :exit t)
+    ;
+    ;  ("q" nil))
+    ;(bind-key "C-c a" 'ag-hydra/body)
   #+END_SRC
 
 ** Hydra system commands
